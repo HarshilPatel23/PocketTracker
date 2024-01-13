@@ -1,8 +1,8 @@
-import { StyleSheet, Text, View, StatusBar, TouchableOpacity } from 'react-native'
-import { Button, TextInput } from 'react-native-paper';
+import { StyleSheet, View, StatusBar, TouchableOpacity } from 'react-native'
+import { Button, TextInput,Text } from 'react-native-paper';
 import React from 'react'
 
-const login = () => {
+const SignIn = ({navigation}) => {
   return (
     <View style={styles.container}>
     <StatusBar style="light" />
@@ -12,7 +12,7 @@ const login = () => {
     <View style={styles.body}>
       <View style={styles.login}>
         <TextInput style={styles.input} 
-        placeholder="Email"
+        label="Email"
          />
         <TextInput style={styles.input}
       label="Password"
@@ -21,18 +21,25 @@ const login = () => {
     />
       </View>
       <Button style={styles.button} mode="contained" onPress={() => console.log('Pressed')}>
-        Signin
+        Sign In
     </Button>
     <Button style={styles.button} icon="google" mode="contained" onPress={() => console.log('Pressed')}>
-        Signin with Google
+        Sign In with Google
     </Button>
+    
+        <View style={styles.bottomtext}>
+            <Text>Don't have an account?  </Text>
+            <Button mode="contained" onPress={() => {navigation.navigate("SignUp")}}>
+                Sign up
+            </Button>
+        </View>
     </View>
 
     </View>
   )
 }
 
-export default login
+export default SignIn
 
 const styles = StyleSheet.create({
     container: {
@@ -76,5 +83,10 @@ const styles = StyleSheet.create({
     button:{
         width: '60%',
         marginBottom: '5%',
-    }
+    },
+    bottomtext:{
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
 })
