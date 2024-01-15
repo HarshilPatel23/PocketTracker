@@ -1,25 +1,27 @@
 import { StyleSheet, View, StatusBar, TouchableOpacity } from 'react-native'
 import { Button, TextInput,Text } from 'react-native-paper';
 import React, { useState } from 'react';
-import { auth1 } from '../firebaseUtil';
+import { auth } from '../firebaseUtil';
+import {signInWithEmailAndPassword} from 'firebase/auth'
 
 const SignIn = ({navigation}) => {
     const [userEmail,setUserEmail]=useState('')
     const [userPassword,setUserPassword]=useState('')
     const [loading,setloading]=useState(false)
-    // const auth=auth1()
-    // const signIn=async ()=>{
-    //     setloading(true);
-    //     try
-    //     {
-    //         const response=await auth.signInWithEmailAndPassword(auth,userEmail,userPassword);
-    //         console.log(response);
-    //     } catch(error){
-    //         console.log(error)
-    //     } finally{
-    //         setloading(false);
-    //     }
-    // }
+    const FirebaseAuth=auth
+    const signIn=async ()=>{
+        setloading(true);
+        try
+        {
+            const response=await signInWithEmailAndPassword(auth,userEmail,userPassword);
+            console.log(response);
+            console.log("sucess")
+        } catch(error){
+            console.log(error)
+        } finally{
+            setloading(false);
+        }
+    }
   return (
     <View style={styles.container}>
     <StatusBar style="light" />
@@ -30,14 +32,18 @@ const SignIn = ({navigation}) => {
       <View style={styles.login}>
         <TextInput style={styles.input} 
         label="Email"
+        value={userEmail}
+        onChangeText={(text)=>setUserEmail(text)}
          />
         <TextInput style={styles.input}
       label="Password"
-      secureTextEntry
+    //   secureTextEntry
+      value={userPassword}
+      onChangeText={(text)=>setUserPassword(text)}
       right={<TextInput.Icon icon="eye" />}
     />
       </View>
-      <Button style={styles.button} mode="contained" onPress={() => console.log('Pressed')}>
+      <Button style={styles.button} mode="contained" onPress={signIn}>
         Sign In
     </Button>
     <Button style={styles.button} icon="google" mode="contained" >
