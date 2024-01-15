@@ -35,7 +35,7 @@ const SignUp = ({navigation}) => {
 
     <View style={styles.bottomtext}>
             <Text>Already have an account?  </Text>
-            <Button mode="contained" onPress={() => {navigation.navigate("LogIn")}}>
+            <Button mode="contained" onPress={() => {navigation.navigate("SignIn")}}>
                 Sign In
             </Button>
         </View>
