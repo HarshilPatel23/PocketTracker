@@ -1,8 +1,29 @@
 import { StyleSheet, View, StatusBar } from 'react-native'
 import { Button, TextInput,Text } from 'react-native-paper';
-import React from 'react'
+import React, { useState } from 'react';
+import { auth } from '../firebaseUtil';
 
 const SignUp = ({navigation}) => {
+    const [userEmail,setUserEmail]=useState('')
+    const [userPassword,setUserPassword]=useState('')
+    const [userRePassword,setUserRePassword]=useState('')
+    const [loading,setloading]=useState(false)
+    const FirebaseAuth=auth()
+    const signUp=async ()=>{
+      if(userPassword!=userRePassword){
+        return alert("password dosent match");
+      }
+      setloading(true);
+      try
+        {
+          const response=await auth.createUserWithEmailAndPassword(FirebaseAuth,userEmail,userPassword);
+          console.log(response);
+        } catch(error){
+          console.log(error)
+        } finally{
+          setloading(false);
+      }
+    }
   return (
     <View style={styles.container}>
     <StatusBar style="light" />
@@ -13,20 +34,26 @@ const SignUp = ({navigation}) => {
       <View style={styles.login}>
       <TextInput style={styles.input}
       label="Email"
+      value={userEmail}
+      onChange={text=>setUserEmail(text)}
     />
     <TextInput style={styles.input}
       label="Password"
       secureTextEntry
+      value={userPassword}
+      onChange={text=>setUserPassword(text)}
       right={<TextInput.Icon icon="eye" />}
     />
     <TextInput style={styles.input}
       label=" Confirm Password"
+      value={userRePassword}
+      onChange={text=>setUserRePassword(text)}
       secureTextEntry
       right={<TextInput.Icon icon="eye" />}
     />
       </View>
 
-      <Button style={styles.button} mode="contained" onPress={() => console.log('Pressed')}>
+      <Button style={styles.button} mode="contained" onPress={signUp}>
         Sign Up
     </Button>
     <Button style={styles.button} icon="google" mode="contained" onPress={() => console.log('Pressed')}>

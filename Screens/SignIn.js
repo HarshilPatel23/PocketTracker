@@ -1,12 +1,25 @@
 import { StyleSheet, View, StatusBar, TouchableOpacity } from 'react-native'
 import { Button, TextInput,Text } from 'react-native-paper';
 import React, { useState } from 'react';
+import { auth1 } from '../firebaseUtil';
 
 const SignIn = ({navigation}) => {
-
     const [userEmail,setUserEmail]=useState('')
     const [userPassword,setUserPassword]=useState('')
-    
+    const [loading,setloading]=useState(false)
+    // const auth=auth1()
+    // const signIn=async ()=>{
+    //     setloading(true);
+    //     try
+    //     {
+    //         const response=await auth.signInWithEmailAndPassword(auth,userEmail,userPassword);
+    //         console.log(response);
+    //     } catch(error){
+    //         console.log(error)
+    //     } finally{
+    //         setloading(false);
+    //     }
+    // }
   return (
     <View style={styles.container}>
     <StatusBar style="light" />
