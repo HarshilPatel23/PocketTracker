@@ -2,13 +2,14 @@ import { StyleSheet, View, StatusBar } from 'react-native'
 import { Button, TextInput,Text } from 'react-native-paper';
 import React, { useState } from 'react';
 import { auth } from '../firebaseUtil';
+import{createUserWithEmailAndPassword} from 'firebase/auth'
 
 const SignUp = ({navigation}) => {
     const [userEmail,setUserEmail]=useState('')
     const [userPassword,setUserPassword]=useState('')
     const [userRePassword,setUserRePassword]=useState('')
     const [loading,setloading]=useState(false)
-    const FirebaseAuth=auth()
+    const FirebaseAuth=auth
     const signUp=async ()=>{
       if(userPassword!=userRePassword){
         return alert("password dosent match");
@@ -16,7 +17,7 @@ const SignUp = ({navigation}) => {
       setloading(true);
       try
         {
-          const response=await auth.createUserWithEmailAndPassword(FirebaseAuth,userEmail,userPassword);
+          const response=await createUserWithEmailAndPassword(FirebaseAuth,userEmail,userPassword);
           console.log(response);
         } catch(error){
           console.log(error)
@@ -35,19 +36,19 @@ const SignUp = ({navigation}) => {
       <TextInput style={styles.input}
       label="Email"
       value={userEmail}
-      onChange={text=>setUserEmail(text)}
+      onChangeText={(text)=>setUserEmail(text)}
     />
     <TextInput style={styles.input}
       label="Password"
       secureTextEntry
       value={userPassword}
-      onChange={text=>setUserPassword(text)}
+      onChangeText={(text)=>setUserPassword(text)}
       right={<TextInput.Icon icon="eye" />}
     />
     <TextInput style={styles.input}
       label=" Confirm Password"
       value={userRePassword}
-      onChange={text=>setUserRePassword(text)}
+      onChangeText={(text)=>setUserRePassword(text)}
       secureTextEntry
       right={<TextInput.Icon icon="eye" />}
     />
@@ -62,7 +63,7 @@ const SignUp = ({navigation}) => {
 
     <View style={styles.bottomtext}>
             <Text>Already have an account?  </Text>
-            <Button mode="contained" onPress={() => {navigation.navigate("LogIn")}}>
+            <Button mode="contained" onPress={() => {navigation.navigate("SignIn")}}>
                 Sign In
             </Button>
         </View>
