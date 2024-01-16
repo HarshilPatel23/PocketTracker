@@ -3,6 +3,7 @@ import { Button, TextInput,Text } from 'react-native-paper';
 import React, { useState } from 'react';
 import { auth } from '../firebaseUtil';
 import {signInWithEmailAndPassword} from 'firebase/auth'
+import Home from './Home';
 
 const SignIn = ({navigation}) => {
     const [userEmail,setUserEmail]=useState('')
@@ -13,9 +14,10 @@ const SignIn = ({navigation}) => {
         setloading(true);
         try
         {
-            const response=await signInWithEmailAndPassword(auth,userEmail,userPassword);
+            const response=await signInWithEmailAndPassword(FirebaseAuth,userEmail,userPassword);
             console.log(response);
             console.log("sucess")
+            navigation.navigate("Home");
         } catch(error){
             console.log(error)
         } finally{
@@ -37,7 +39,7 @@ const SignIn = ({navigation}) => {
          />
         <TextInput style={styles.input}
       label="Password"
-    //   secureTextEntry
+      secureTextEntry
       value={userPassword}
       onChangeText={(text)=>setUserPassword(text)}
       right={<TextInput.Icon icon="eye" />}
