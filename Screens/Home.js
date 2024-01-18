@@ -7,9 +7,19 @@ const Home = ({ navigation }) => {
     <View style={styles.container}>
       <StatusBar style="light" />
       <View style={styles.topbar}>
-        <Text style={styles.heading}>Pocket Tracker</Text>
+        <Text style={styles.heading}>OverView</Text>
       </View>
       <View style={styles.body}>
+
+      <View style={styles.body2}>
+        <Text style={styles.heading1}>Dashboard</Text>
+        <Text style={styles.heading1}>Dashboard</Text>
+
+        <View style={styles.button}>
+        <Text style={styles.heading1}>$X Total Expense</Text>
+        </View>
+      </View>
+
         <View style={styles.dashboardContent}>
           <Text style={styles.label}>Total Expenses:</Text>
           <Text style={styles.value}>$500</Text>
@@ -18,18 +28,7 @@ const Home = ({ navigation }) => {
           <Text style={styles.label}>Total Income:</Text>
           <Text style={styles.value}>$700</Text>
         </View>
-        <Button
-          style={styles.button}
-          onPress={() => navigation.navigate('AddExpense')}
-        >
-          <Text style={styles.actionButton}>Add Expense</Text>
-        </Button>
-        <Button
-          style={styles.button}
-          onPress={() => navigation.navigate('ViewReports')}
-        >
-          <Text style={styles.actionButton}>View Reports</Text>
-        </Button>
+      
       </View>
     </View>
   );
@@ -40,34 +39,36 @@ export default Home;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: 'rgb(118, 32, 171)',
     },
     topbar:{
-        backgroundColor: 'rgb(118, 32, 171)',
         width: '100%',
         height:'12%',
         PaddingTop:25,
         textAlign: 'center',
         justifyContent: 'center',
-        borderBottomLeftRadius: 50,
-        borderBottomRightRadius: 50,
+        
     },
     heading:{
         color: 'white',
         fontSize: 25,
         fontWeight: 'bold',
         textAlign: 'center',
-        paddingTop: '10%',
+        paddingTop: '12%',
     },
     body:{
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
+      backgroundColor: 'white',
+      borderRadius: 50,
+      flex: 1,
+      alignItems: 'center',
+      width: '100%',
+      height: '100%',
+      marginTop: '15%',
+      marginBottom: '1%',
+      
     },
   dashboardContent: {
     borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
     width: '80%',
     height: '15%',
     marginBottom: '5%',
@@ -79,17 +80,27 @@ const styles = StyleSheet.create({
   },
   value: {
     fontSize: 20,
-    color: 'rgb(118, 32, 171)',
   },
-  button:{
-    width: '60%',
-    marginBottom: '5%',
+  body2:{
+    backgroundColor: 'rgb(255,190,255)',
+    height: '30%',
+    borderRadius: 30,
+    alignItems: 'center',
+    width: '80%',
+    justifyContent: 'flex-end',
+    marginTop: '-12%',
+  },
+  heading1:{
+    fontSize: 24,
+    fontWeight: 'bold',
+    margin: 10,
+  },
+  button: {
     backgroundColor: 'rgb(118, 32, 171)',
-    padding: 5,
-    borderRadius: 15,
+    width: '100%',
+    height: '40%',
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-    actionButton: {
-        color: 'white',
-        fontWeight: 'bold',
-    },
 });
