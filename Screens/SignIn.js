@@ -3,7 +3,6 @@ import { Button, TextInput,Text } from 'react-native-paper';
 import React, { useState } from 'react';
 import { auth,signInWithGooglePopup } from '../firebaseUtil';
 import {signInWithEmailAndPassword} from 'firebase/auth'
-import Home from './Home';
 
 const SignIn = ({navigation}) => {
     const [userEmail,setUserEmail]=useState('')
@@ -17,7 +16,7 @@ const SignIn = ({navigation}) => {
             const user=await signInWithEmailAndPassword(FirebaseAuth,userEmail,userPassword);
             console.log(user);
             console.log("sucess")
-            navigation.navigate("Home");
+            navigation.navigate("navigation");
         } catch(error){
             console.log(error)
         } finally{
