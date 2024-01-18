@@ -1,6 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app';
-import {getAuth,signInWithRedirect,signInWithPopup, GoogleAuthProvider} from'firebase/auth'
+import {getAuth,signInWithPopup, GoogleAuthProvider,createUserWithEmailAndPassword} from'firebase/auth'
+import {getFirestore,doc,getDoc,setDoc} from 'firebase/firestore'
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -23,22 +24,34 @@ export const app = initializeApp(firebaseConfig);
 // });
 export const auth=getAuth();
 // export const signInWithGooglePopup=()=>signInWithPopup(auth,provider); 
-// export const db=getFirestore()
-// export const createUserDocumentFromAuth=async(userAuth)=>{
-//     const userDocRef=doc(db,'users',userAuth.uid);
-//     console.log(userDocRef);
-//     const userSnapShot= await getDoc(userDocRef);
-//     if (!userSnapShot.exists()){
-//         const {displayName,email}= userAuth;
-//         const createdAt=new Date();
-//         try{await setDoc(userDocRef,{
-//             displayName,
-//             email,
-//             createdAt
-//         })} catch (error) {
-//             console.log("error seting",error)
-//         }
-//     }
-//     console.log(userSnapShot.exists())
-//     return userDocRef;
-// }
+export const db=getFirestore()
+
+
+export const createUserDocumentFromAuth=async(userAuth)=>{
+  console.log("adding to db2",userAuth.user.uid)
+    const userDocRef=await doc(db,'users',userAuth.user.uid);
+    console.log("userdocref",userDocRef);
+    const userSnapShot= await getDoc(userDocRef);
+    if (!userSnapShot.exists()){
+        const {email}= userAuth.user;
+        const createdAt=new Date();
+        const emailAddress=email;
+        const fullName="";                              // needs to add field in the signup form to add here
+        console.log(createdAt,emailAddress,fullName) 
+        try{await setDoc(userDocRef,{                   // user doc fields 
+          fullName,
+          emailAddress,
+          createdAt
+          })} catch (error) {
+            console.log("error seting",error)
+        }
+    }
+    console.log(userSnapShot.exists())
+    return userDocRef;
+}
+
+
+export const addUser=async(userEmail,userPassword)=>{
+  const userAuth=await createUserWithEmailAndPassword(auth,userEmail,userPassword);
+  return userAuth;
+}

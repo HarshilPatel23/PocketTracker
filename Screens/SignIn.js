@@ -1,7 +1,7 @@
 import { StyleSheet, View, StatusBar, TouchableOpacity } from 'react-native'
 import { Button, TextInput,Text } from 'react-native-paper';
 import React, { useState } from 'react';
-import { auth } from '../firebaseUtil';
+import { auth,signInWithGooglePopup } from '../firebaseUtil';
 import {signInWithEmailAndPassword} from 'firebase/auth'
 import Home from './Home';
 
@@ -14,8 +14,8 @@ const SignIn = ({navigation}) => {
         setloading(true);
         try
         {
-            const response=await signInWithEmailAndPassword(FirebaseAuth,userEmail,userPassword);
-            console.log(response);
+            const user=await signInWithEmailAndPassword(FirebaseAuth,userEmail,userPassword);
+            console.log(user);
             console.log("sucess")
             navigation.navigate("Home");
         } catch(error){
@@ -24,6 +24,13 @@ const SignIn = ({navigation}) => {
             setloading(false);
         }
     }
+    // const logGoogleUser=async()=>{
+    //     const {user}=await signInWithGooglePopup;
+    //     // await createUserDocumentFromAuth(user)
+    //     console.log(user);
+    //     console.log("sucess")
+    //     navigation.navigate("Home");
+    // }
   return (
     <View style={styles.container}>
     <StatusBar style="light" />
