@@ -1,8 +1,11 @@
 import React from 'react';
 import { StyleSheet, View, Text, StatusBar, TouchableOpacity } from 'react-native';
 import { Button } from 'react-native-paper';
+import { useAuth } from '../firebaseUtil';
 
 const Home = ({ navigation }) => {
+  const {user}=useAuth();
+  console.log("home",user)
   return (
     <View style={styles.container}>
       <StatusBar style="light" />
@@ -12,7 +15,7 @@ const Home = ({ navigation }) => {
       <View style={styles.body}>
 
       <View style={styles.body2}>
-        <Text style={styles.heading1}>Dashboard</Text>
+        <Text style={styles.heading1}>{user.uid}</Text>
         <Text style={styles.heading1}>Dashboard</Text>
 
         <View style={styles.button}>
