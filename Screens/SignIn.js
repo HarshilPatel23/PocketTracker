@@ -1,35 +1,49 @@
 import { StyleSheet, View, StatusBar, TouchableOpacity } from 'react-native'
 import { Button, TextInput,Text } from 'react-native-paper';
 import React, { useState } from 'react';
-import { auth,signInWithGooglePopup } from '../firebaseUtil';
+import { auth, useAuth } from '../firebaseUtil';
 import {signInWithEmailAndPassword} from 'firebase/auth'
 
 const SignIn = ({navigation}) => {
     const [userEmail,setUserEmail]=useState('')
     const [userPassword,setUserPassword]=useState('')
+    const [user, setUser] = useState(null);
     const [loading,setloading]=useState(false)
+    const {signIn}=useAuth();
+
+
     const FirebaseAuth=auth
-    const signIn=async ()=>{
-        setloading(true);
-        try
-        {
-            const user=await signInWithEmailAndPassword(FirebaseAuth,userEmail,userPassword);
-            console.log(user);
-            console.log("sucess")
-            navigation.navigate("navigation");
-        } catch(error){
-            console.log(error)
-        } finally{
-            setloading(false);
-        }
-    }
-    // const logGoogleUser=async()=>{
-    //     const {user}=await signInWithGooglePopup;
-    //     // await createUserDocumentFromAuth(user)
-    //     console.log(user);
-    //     console.log("sucess")
-    //     navigation.navigate("Home");
+    // const signIn=async ()=>{
+    //     setloading(true);
+    //     try
+    //     {
+    //         const user=await signInWithEmailAndPassword(FirebaseAuth,userEmail,userPassword);
+    //         console.log(user);
+    //         console.log("sucess")
+    //         navigation.navigate("navigation");
+    //     } catch(error){
+    //         console.log(error)
+    //     } finally{
+    //         setloading(false);
+    //     }
     // }
+    const handleSignIn = async () => {
+        await signIn(userEmail, userPassword);
+        navigation.navigate("navigation");
+      };
+    // useEffect(() => {
+    //     const unsubscribe = auth().onAuthStateChanged((authUser) => {
+    //       if (authUser) {
+    //         // User is signed in.
+    //         setUser(authUser);
+    //       } else {
+    //         // User is signed out.
+    //         setUser(null);
+    //       }
+    //     });
+    //     return unsubscribe; // Unsubscribe when component unmounts
+    // }, []);
+    
   return (
     <View style={styles.container}>
     <StatusBar style="light" />
@@ -51,12 +65,12 @@ const SignIn = ({navigation}) => {
       right={<TextInput.Icon icon="eye" />}
     />
       </View>
-      <Button style={styles.button} mode="contained" onPress={signIn}>
+      <Button style={styles.button} mode="contained" onPress={handleSignIn}>
         Sign In
     </Button>
-    <Button style={styles.button} icon="google" mode="contained" >
+    {/* <Button style={styles.button} icon="google" mode="contained" >
         Sign In with Google
-    </Button>
+    </Button> */}
     
         <View style={styles.bottomtext}>
             <Text>Don't have an account?  </Text>

@@ -1,16 +1,39 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, StatusBar, TextInput, TouchableOpacity } from 'react-native';
-
+import RNPickerSelect from 'react-native-picker-select';
+import { addExpense, useAuth } from '../firebaseUtil';
 const AddExpense = () => {
+  const {user,categories,subCategories,fetchCategoriesWithSubcategories}=useAuth();
   const [expenseName, setExpenseName] = useState('');
   const [expenseAmount, setExpenseAmount] = useState('');
 
-  const addExpense = () => {
-    // Add your logic to handle expense addition here
-    console.log("Expense added:", expenseName, expenseAmount);
-    // Add functionality to update your data or send it to the server
+  // fetch categories from the db
+  const [category, setCategory] = useState('');
+  const [subcategory, setSubcategory] = useState('');
+  useEffect(() => {
+    fetchCategoriesWithSubcategories();
+  }, []);
+  const handleCategoryChange = (value) => {
+    setCategory(value);
+    setSubcategory('');
   };
 
+  const handleSubcategoryChange = (value) => {
+    setSubcategory(value);
+  };
+
+  const handleAddExpense = () => {
+    if(expenseAmount==''||category=='' || subcategory==''|| expenseName==''){
+      console.log("am",expenseAmount,"cat",category,"sub",subcategory,"nam",expenseName)
+      console.log("fail to add")
+    }else{
+      addExpense(user.uid,expenseAmount,category,subcategory,expenseName)
+      console.log("Expense added:", expenseName, expenseAmount);
+    }
+    
+    // Add functionality to update your data or send it to the server
+    
+  };
   return (
     <View style={styles.container}>
     <StatusBar style="light" />
@@ -22,10 +45,31 @@ const AddExpense = () => {
       <TextInput
         style={styles.input}
         placeholder="Expense Name"
+        req
         placeholderTextColor= 'rgb(118, 32, 171)'
         value={expenseName}
         onChangeText={(text) => setExpenseName(text)}
       />
+      <Text>Select Category:</Text>
+      <RNPickerSelect
+        style={styles.input}
+        placeholder={{ label: 'Select Category', value: '' }}
+        items={categories}
+        onValueChange={handleCategoryChange}
+        value={category}
+      />
+      {category && (
+        <View>
+          <Text>Select Subcategory:</Text>
+          <RNPickerSelect
+            style={styles.input}
+            placeholder={{ label: 'Select Subcategory', value: '' }}
+            items={subCategories[category]}
+            onValueChange={handleSubcategoryChange}
+            value={subcategory}
+          />
+        </View>
+      )}
       <TextInput
         style={styles.input}
         placeholder="Expense Amount"
@@ -34,7 +78,7 @@ const AddExpense = () => {
         value={expenseAmount}
         onChangeText={(text) => setExpenseAmount(text)}
       />
-      <TouchableOpacity style={styles.addButton} onPress={addExpense}>
+      <TouchableOpacity style={styles.addButton} onPress={handleAddExpense}>
         <Text style={styles.buttonText}>Add Expense</Text>
       </TouchableOpacity>
       </View>
