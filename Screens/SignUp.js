@@ -1,15 +1,13 @@
 import { StyleSheet, View, StatusBar } from 'react-native'
 import { Button, TextInput,Text } from 'react-native-paper';
 import React, { useState } from 'react';
-import { auth } from '../firebaseUtil';
-import{createUserWithEmailAndPassword} from 'firebase/auth'
+import { addUser,createUserDocumentFromAuth} from '../firebaseUtil';
 
 const SignUp = ({navigation}) => {
     const [userEmail,setUserEmail]=useState('')
     const [userPassword,setUserPassword]=useState('')
     const [userRePassword,setUserRePassword]=useState('')
     const [loading,setloading]=useState(false)
-    const FirebaseAuth=auth
     const signUp=async ()=>{
       if(userPassword!=userRePassword){
         return alert("password dosent match");
@@ -17,8 +15,11 @@ const SignUp = ({navigation}) => {
       setloading(true);
       try
         {
-          const response=await createUserWithEmailAndPassword(FirebaseAuth,userEmail,userPassword);
-          console.log(response);
+          const user=await addUser(userEmail,userPassword)
+          console.log("user created",user);
+          console.log("adding to db")
+          await createUserDocumentFromAuth(user)
+          
         } catch(error){
           console.log(error)
         } finally{
