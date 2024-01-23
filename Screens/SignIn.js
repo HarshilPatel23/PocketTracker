@@ -1,4 +1,4 @@
-import { StyleSheet, View, StatusBar, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, StatusBar, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import { Button, TextInput,Text } from 'react-native-paper';
 import React, { useState } from 'react';
 import { auth, useAuth } from '../firebaseUtil';
@@ -43,8 +43,13 @@ const SignIn = ({navigation}) => {
     //     });
     //     return unsubscribe; // Unsubscribe when component unmounts
     // }, []);
+
+    const togglePasswordVisibility = () => {
+        setPasswordVisible((prev) => !prev);
+      };
     
   return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
     <View style={styles.container}>
     <StatusBar style="light" />
     <View style={styles.topbar}>
@@ -56,15 +61,24 @@ const SignIn = ({navigation}) => {
         label="Email"
         value={userEmail}
         onChangeText={(text)=>setUserEmail(text)}
+        onSubmitEditing={() => {
+            // Move focus to the password input when "return" is pressed
+            passwordInput.focus();
+        }}
          />
         <TextInput style={styles.input}
       label="Password"
       secureTextEntry
       value={userPassword}
       onChangeText={(text)=>setUserPassword(text)}
+      ref={(input) => {
+        // Set a ref to the password input for focus
+        passwordInput = input;
+        }}
+        onSubmitEditing={handleSignIn}
       right={<TextInput.Icon icon="eye" />}
     />
-      </View>
+      
       <Button style={styles.button} mode="contained" onPress={handleSignIn}>
         Sign In
     </Button>
@@ -78,9 +92,11 @@ const SignIn = ({navigation}) => {
                 Sign up
             </Button>
         </View>
+        </View>
     </View>
 
     </View>
+    </TouchableWithoutFeedback>
   )
 }
 
