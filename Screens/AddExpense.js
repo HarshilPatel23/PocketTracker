@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, StatusBar, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, StatusBar, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard,Alert  } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import { addExpense, useAuth } from '../firebaseUtil';
 const AddExpense = () => {
@@ -31,10 +31,37 @@ const AddExpense = () => {
       console.log("Expense added:", expenseName, expenseAmount);
     }
     
+    Alert.alert('Expense Added', 'Your expense has been added.', [
+      {
+        text: 'OK',
+        onPress: () => {
+          // Clear the fields after the alert is dismissed
+          setExpenseName('');
+          setExpenseAmount('');
+          setCategory('');
+          setSubcategory('');
+        },
+      },
+    ]);
     // Add functionality to update your data or send it to the server
     
   };
+
+  const handleFocus = () => {
+    if (expenseAmount === '') {
+      setExpenseAmount('$');
+    }
+  };
+
+  const handleBlur = () => {
+    if (expenseAmount === '$') {
+      setExpenseAmount('');
+    }
+  };
+
+  
   return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
     <View style={styles.container}>
     <StatusBar style="light" />
       <View style={styles.topbar}>
@@ -45,37 +72,52 @@ const AddExpense = () => {
       <TextInput
         style={styles.input}
         placeholder="Expense Name"
-        req
         placeholderTextColor= 'rgb(118, 32, 171)'
         value={expenseName}
         onChangeText={(text) => setExpenseName(text)}
       />
-      <Text>Select Category:</Text>
+      <Text style={styles.heading1}>Select Category:</Text>
       <RNPickerSelect
-        style={styles.input}
-        placeholder={{ label: 'Select Category', value: '' }}
+        style={{
+              ...styles,
+              iconContainer: {
+                top: 10,
+                right: 12,
+              },
+              placeholder:{ label: 'Select Category', value: '', color: 'rgb(118, 32, 171)'},
+            }}
+        
         items={categories}
         onValueChange={handleCategoryChange}
         value={category}
       />
       {category && (
-        <View>
-          <Text>Select Subcategory:</Text>
+        <View style={styles.subcatagory}>
+          <Text style={styles.heading1}>Select Subcategory:</Text>
           <RNPickerSelect
-            style={styles.input}
-            placeholder={{ label: 'Select Subcategory', value: '' }}
+            style={{
+              ...styles,
+              iconContainer: {
+                top: 10,
+                right: 12,
+              },
+              placeholder:{ label: 'Select Category', value: '', color: 'rgb(118, 32, 171)'},
+            }}
             items={subCategories[category]}
             onValueChange={handleSubcategoryChange}
             value={subcategory}
           />
         </View>
       )}
+      
       <TextInput
         style={styles.input}
         placeholder="Expense Amount"
         placeholderTextColor= 'rgb(118, 32, 171)'
         keyboardType="numeric"
         value={expenseAmount}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
         onChangeText={(text) => setExpenseAmount(text)}
       />
       <TouchableOpacity style={styles.addButton} onPress={handleAddExpense}>
@@ -83,6 +125,7 @@ const AddExpense = () => {
       </TouchableOpacity>
       </View>
     </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -135,6 +178,39 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontWeight: 'bold',
+  },
+  scroller: {
+    width: '80%',
+    height: 40,
+    borderColor: 'rgb(118, 32, 171)',
+    borderWidth: 2,
+    marginBottom: 20,
+    borderRadius: 10,
+    padding: 10,
+  },
+  inputIOS: {
+    width: '80%',
+    height: 40,
+    borderColor: 'rgb(118, 32, 171)',
+    borderWidth: 2,
+    marginBottom: 20,
+    borderRadius: 10,
+    padding: 10,
+    alignSelf: 'center',
+  },
+  inputAndroid: {
+    fontSize: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderWidth: 0.5,
+    borderColor: 'purple',
+    borderRadius: 8,
+    color: 'black',
+    paddingRight: 30, // to ensure the text is never behind the icon
+  },
+  subcatagory: {
+    width: '100%',
+    alignItems: 'center',
   },
 });
 

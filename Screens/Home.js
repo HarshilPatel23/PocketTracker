@@ -1,20 +1,39 @@
-import React from 'react';
-import { StyleSheet, View, Text, StatusBar, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View, Text, StatusBar, TouchableOpacity, Image } from 'react-native';
 import { Button } from 'react-native-paper';
 import { useAuth } from '../firebaseUtil';
 
 const Home = ({ navigation }) => {
   const {user}=useAuth();
   console.log("home",user)
+  const [editing, setEditing] = useState(false);
+  const [name, setName] = useState(user.displayName || '');
+  const [password, setPassword] = useState('');
+  const [dob, setDob] = useState(user.dateOfBirth || '');
+
+  const handleSave = () => {
+    // Implement logic to update user information in Firebase
+    // For example, use Firebase authentication methods to update displayName and password
+    // You can also use a Firebase Firestore collection to store additional user information like date of birth
+    // Remember to handle errors and update the UI accordingly
+    setEditing(false);
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar style="light" />
       <View style={styles.topbar}>
-        <Text style={styles.heading}>OverView</Text>
+        <View style={styles.centered}>
+        <Text style={styles.heading}>Pocket Tracker</Text>
+        </View>
+        <TouchableOpacity style={styles.userButton} >
+        <Image source={require('./Images/user.png')} style={styles.user} />
+        </TouchableOpacity>
       </View>
       <View style={styles.body}>
 
       <View style={styles.body2}>
+        
         <Text style={styles.heading1}>{user.uid}</Text>
         <Text style={styles.heading1}>Dashboard</Text>
 
@@ -46,18 +65,31 @@ const styles = StyleSheet.create({
     },
     topbar:{
         width: '100%',
-        height:'12%',
-        PaddingTop:25,
+        height:'5%',
         textAlign: 'center',
-        justifyContent: 'center',
-        
+        justifyContent: 'space-around',
+        flexDirection: 'row',
+        marginTop: '15%',
+    },
+    userButton: {
+      alignSelf: 'flex-end',
+      paddingRight: '5%',
+      
+    },
+    user: {
+      width: 40,
+      height: 40,
+    },
+    centered: {
+      flex: 2,
+      alignItems: 'center',
     },
     heading:{
         color: 'white',
         fontSize: 25,
         fontWeight: 'bold',
         textAlign: 'center',
-        paddingTop: '12%',
+        paddingLeft: '15%',
     },
     body:{
       backgroundColor: 'white',
@@ -97,6 +129,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     margin: 10,
+    color:'white',
   },
   button: {
     backgroundColor: 'rgb(118, 32, 171)',

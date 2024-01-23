@@ -31,10 +31,10 @@ export const createUserDocumentFromAuth=async(userAuth)=>{
     const userDocRef=await doc(db,'users',userAuth.user.uid);
     const userSnapShot= await getDoc(userDocRef);
     if (!userSnapShot.exists()){
-        const {email}= userAuth.user;
+        const {email, displayName}= userAuth.user;
         const createdAt=new Date();
         const emailAddress=email;
-        const fullName="";                              // needs to add field in the signup form to add here
+        const fullName= displayName;                              // needs to add field in the signup form to add here (Added at 12.50 on 22nd y tirth)
         console.log(createdAt,emailAddress,fullName) 
         try{await setDoc(userDocRef,{                   // user doc fields 
           fullName,

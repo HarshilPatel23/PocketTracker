@@ -1,4 +1,4 @@
-import { StyleSheet, View, StatusBar } from 'react-native'
+import { StyleSheet, View, StatusBar, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import { Button, TextInput,Text } from 'react-native-paper';
 import React, { useState } from 'react';
 import { addUser,createUserDocumentFromAuth} from '../firebaseUtil';
@@ -7,6 +7,8 @@ const SignUp = ({navigation}) => {
     const [userEmail,setUserEmail]=useState('')
     const [userPassword,setUserPassword]=useState('')
     const [userRePassword,setUserRePassword]=useState('')
+    const [userName,setUserName]=useState('')
+    const [userPhonenumber,setUserPhonenumber]=useState('')
     const [loading,setloading]=useState(false)
     const signUp=async ()=>{
       if(userPassword!=userRePassword){
@@ -15,7 +17,7 @@ const SignUp = ({navigation}) => {
       setloading(true);
       try
         {
-          const user=await addUser(userEmail,userPassword)
+          const user=await addUser(userEmail,userPassword, userName, userPhonenumber)
           console.log("user created",user);
           console.log("adding to db")
           await createUserDocumentFromAuth(user)
@@ -27,14 +29,20 @@ const SignUp = ({navigation}) => {
       }
     }
   return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
     <View style={styles.container}>
     <StatusBar style="light" />
     <View style={styles.topbar}>
       <Text style={styles.heading}>Pocket Tracker</Text>
     </View>
     <View style={styles.body}>
-      <View style={styles.login}>
+      <View style={styles.signup}>
       <TextInput style={styles.input}
+      label="Name"
+      value={userName}
+      onChangeText={(text)=>setUserName(text)}
+    />
+    <TextInput style={styles.input}
       label="Email"
       value={userEmail}
       onChangeText={(text)=>setUserEmail(text)}
@@ -53,24 +61,30 @@ const SignUp = ({navigation}) => {
       secureTextEntry
       right={<TextInput.Icon icon="eye" />}
     />
-      </View>
+    <TextInput style={styles.input}
+      label="Phone Number"
+      value={userPhonenumber}
+      keyboardType="numeric"
+      onChangeText={(number)=>setUserPhonenumber(number)}
+    />
+      
 
       <Button style={styles.button} mode="contained" onPress={signUp}>
         Sign Up
     </Button>
-    <Button style={styles.button} icon="google" mode="contained" onPress={() => console.log('Pressed')}>
-        Sign Up with Google
-    </Button>
 
+  
     <View style={styles.bottomtext}>
             <Text>Already have an account?  </Text>
             <Button mode="contained" onPress={() => {navigation.navigate("SignIn")}}>
                 Sign In
             </Button>
         </View>
+        </View>
     </View>
 
     </View>
+    </TouchableWithoutFeedback>
   )
 }
 
@@ -103,7 +117,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    login:{
+    signup:{
         width: '80%',
         height: '30%',
         backgroundColor: 'white',
