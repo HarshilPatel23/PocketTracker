@@ -9,7 +9,6 @@ const Home = ({ navigation }) => {
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(user.displayName || '');
   const [password, setPassword] = useState('');
-  const [dob, setDob] = useState(user.dateOfBirth || '');
 
   const handleSave = () => {
     // Implement logic to update user information in Firebase
