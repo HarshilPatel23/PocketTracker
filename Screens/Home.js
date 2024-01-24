@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, StatusBar, TouchableOpacity, Image } from 'react-native';
-import { useAuth } from '../firebaseUtil';
+import { useAuth } from '../utils/user.utils';
 
 const Home = ({ navigation }) => {
   const {user}=useAuth();
