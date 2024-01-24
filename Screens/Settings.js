@@ -1,86 +1,151 @@
-import { StyleSheet, Text, View, StatusBar, Image } from 'react-native'
+import { StyleSheet, Text, View, StatusBar, Image, TextInput, TouchableOpacity } from 'react-native'
 import React, {useRef} from 'react'
-import { useAuth } from '../utils/user.utils';
+import { useAuth,updateUserInfrmation } from '../utils/user.utils';
 
 const Settings = () => {
-  const { user } = useAuth();
-  const emailRef = useRef();
+  const { user, updateProfile, reauthenticateUser } = useAuth();
+  const [name, setName] = useState(user.userName || '');
+  const [phoneNumber, setPhoneNumber] = useState(user.phoneNumber || '');
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [RenewPassword, setReNewPassword] = useState('');
   const passwordRef = useRef();
+
+  const handleUpdateProfile = async () => {
+    
+  };
+
 
   return (
     <View style={styles.container}>
-    <StatusBar style="light" />
+      <StatusBar style="light" />
       <View style={styles.topbar}>
         <Text style={styles.heading}>Settings</Text>
       </View>
-        <View style={styles.body}>
+      <View style={styles.body}>
+        <View style={styles.userimage}>
           <Image source={require('./Images/profile-user.png')} style={styles.user} />
+        </View>
+        <View style={styles.body2}>
+          <Text style={styles.info}>Name: {user.userName}</Text>
+          <Text style={styles.info}>Email: {user.email}</Text>
+          {phoneNumber && <Text style={styles.info}>Phone Number: {phoneNumber}</Text>}
 
-          <View style={styles.body2}>
-            <Text style={styles.heading1}>Name: {user.displayName}</Text>
-            <Text style={styles.heading1}>Email: {user.email}</Text>
-            <Text style={styles.heading1}>Phone Number: {user.phoneNumber}</Text>
+          <Text style={styles.info}>Update Information:</Text>
 
-            <View style={styles.button}>
-            <Text style={styles.heading1}>Change Password</Text>
-
-            </View>
-            </View>
-          </View>
-
+          <TextInput
+            style={styles.input}
+            placeholder="New Name"
+            value={name}
+            onChangeText={(text) => setName(text)}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Old Password"
+            value={oldPassword}
+            onChangeText={(text) => setOldPassword(text)}
+            secureTextEntry
+            ref={passwordRef}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="New Password"
+            value={newPassword}
+            onChangeText={(text) => setNewPassword(text)}
+            secureTextEntry
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Re New Password"
+            value={RenewPassword}
+            onChangeText={(text) => setReNewPassword(text)}
+            secureTextEntry
+          />
+          <TouchableOpacity style={styles.button} onPress={handleUpdateProfile}>
+            <Text style={styles.buttonText}>Update Profile</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </View>
   );
 };
 
-export default Settings
+export default Settings;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-},
-topbar:{
+  },
+  topbar: {
     backgroundColor: 'rgb(118, 32, 171)',
     width: '100%',
-    height:'12%',
-    PaddingTop:25,
-    textAlign: 'center',
-    justifyContent: 'center',
+    height: '18%',
     borderBottomLeftRadius: 50,
     borderBottomRightRadius: 50,
-},
-heading:{
+  },
+  heading: {
     color: 'white',
     fontSize: 25,
     fontWeight: 'bold',
     textAlign: 'center',
-    paddingTop: '10%',
-},
-body: {
+    paddingTop: '15%',
+  },
+  body: {
     padding: 10,
     borderColor: 'rgb(118, 32, 171)',
-    borderRadius: 5,
-    borderWidth: 2,
-    margin:10,
-  },
-  info:{
-    fontSize: 15,
-    fontWeight: 'bold',
+    margin: 10,
   },
   user: {
-    width: 40,
-    height: 40,
+    width: 100,
+    height: 100,
+    alignSelf: 'center',
   },
-  body2:{
+  body2: {
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: '5%',
   },
-  heading1:{
+  heading1: {
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
     paddingTop: '10%',
   },
+  userimage: {
+    height: '15%',
+    width: '20%',
+    justifySelf: 'center',
+    alignSelf: 'center',
+    marginTop: '-20%',
+    backgroundColor: 'white',
+    borderRadius: 100,
+  },
+  input: {
+    width: '80%',
+    height: 40,
+    borderColor: 'rgb(118, 32, 171)',
+    borderWidth: 2,
+    marginBottom: 20,
+    borderRadius: 10,
+    padding: 10,
+  },
+  button: {
+    backgroundColor: 'rgb(118, 32, 171)',
+    padding: 10,
+    borderRadius: 15,
+    marginTop: 20,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  info: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    padding: '5%',
+    color: 'rgb(118, 32, 171)',
+  },
 });
-
