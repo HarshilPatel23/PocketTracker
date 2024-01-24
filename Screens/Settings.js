@@ -57,7 +57,7 @@ const Settings = () => {
           <TextInput
             style={styles.input}
             placeholder="Re New Password"
-            value={newPassword}
+            value={RenewPassword}
             onChangeText={(text) => setReNewPassword(text)}
             secureTextEntry
           />
