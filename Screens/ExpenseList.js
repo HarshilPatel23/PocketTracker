@@ -5,6 +5,7 @@ import { getUserExpenses, useAuth } from '../firebaseUtil';
 const Settings = () => {
   const [userExpenses, setUserExpenses] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [expensesToShow,setExpensesToShow]=useState([])
   const { user } = useAuth();
 
   const onRefresh = () => {
@@ -14,6 +15,14 @@ const Settings = () => {
     getUserExpenses(user.uid)
       .then((expenses) => {
         setUserExpenses(expenses);
+        const currentMonthExpenses = userExpenses.filter((expense) => {
+          const expenseDate = expense.addDate.toDate()
+          const currentDate = new Date();
+          return expenseDate.getMonth() === currentDate.getMonth() &&
+                 expenseDate.getFullYear() === currentDate.getFullYear();
+        });;
+        setExpensesToShow(currentMonthExpenses)
+        console.log("to show",expensesToShow)
         setRefreshing(false);
       })
       .catch((error) => {
@@ -41,7 +50,7 @@ const Settings = () => {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      {userExpenses.map((expense) => (
+      {expensesToShow.map((expense) => (
         <View key={expense.id}>
         <View style={styles.body}>
           <Text style={styles.info}>
@@ -52,6 +61,12 @@ const Settings = () => {
           </Text>
           <Text style={styles.info}>
             Category: {expense.category}
+          </Text>
+          <Text style={styles.info}>
+            Sub Category: {expense.subCategory}
+          </Text>
+          <Text style={styles.info}>
+            Date: {expense.addDate ? expense.addDate.toDate().toLocaleDateString() : 'N/A'}
           </Text>
           </View>
         </View>
