@@ -193,3 +193,35 @@ export const getUserExpenses=async(userId)=>{
     return expenses
   }
 }
+
+
+// function to update users information such as password and name
+
+export const updateUserInfrmation=async(userId,userName,userPassword)=>{
+  const userDocRef=await doc(db,'users',userId);
+  const usersnapShot= await getDoc(userDocRef);
+  if (usersnapShot.exists()){
+    try{
+      await usersnapShot.ref.update({
+        fullName:userName,
+        password:userPassword
+      })
+    }catch(error){
+      console.log(error)
+    }
+  }
+}
+
+// function to delete users
+
+export const deleteUser=async(userId)=>{
+  const userDocRef=await doc(db,'users',userId);
+  const usersnapShot= await getDoc(userDocRef);
+  if (usersnapShot.exists()){
+    try{
+      await usersnapShot.ref.delete()
+    }catch(error){
+      console.log(error)
+    }
+  }
+}

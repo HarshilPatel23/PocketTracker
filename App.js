@@ -10,6 +10,7 @@ import ViewReports from './Screens/ViewReports';
 import navigation from './Screens/BottomNav/navigation';
 import ExpenseList from './Screens/ExpenseList';
 import { AuthProvider } from './firebaseUtil';
+import Settings from './Screens/Settings';
 
 const Stack = createNativeStackNavigator();
 
@@ -25,6 +26,7 @@ export default function App() {
           <Stack.Screen options={{headerShown: false}} name="ViewReports" component={ViewReports}/>
           <Stack.Screen options={{headerShown: false}} name="navigation" component={navigation}/>
           <Stack.Screen options={{headerShown: false}} name="ExpenxeList" component={ExpenseList}/>
+          <Stack.Screen options={{headerShown: false}} name="Settings" component={Settings}/>
         </Stack.Navigator>
       </NavigationContainer>
     </AuthProvider>

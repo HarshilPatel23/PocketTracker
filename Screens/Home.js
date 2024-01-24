@@ -1,21 +1,13 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, StatusBar, TouchableOpacity, Image } from 'react-native';
-import { Button } from 'react-native-paper';
 import { useAuth } from '../firebaseUtil';
 
 const Home = ({ navigation }) => {
   const {user}=useAuth();
   console.log("home",user)
-  const [editing, setEditing] = useState(false);
-  const [name, setName] = useState(user.displayName || '');
-  const [password, setPassword] = useState('');
 
-  const handleSave = () => {
-    // Implement logic to update user information in Firebase
-    // For example, use Firebase authentication methods to update displayName and password
-    // You can also use a Firebase Firestore collection to store additional user information like date of birth
-    // Remember to handle errors and update the UI accordingly
-    setEditing(false);
+  const handleUserLogoPress = () => {
+    navigation.navigate('Settings');
   };
 
   return (
@@ -25,8 +17,8 @@ const Home = ({ navigation }) => {
         <View style={styles.centered}>
         <Text style={styles.heading}>Pocket Tracker</Text>
         </View>
-        <TouchableOpacity style={styles.userButton} >
-        <Image source={require('./Images/user.png')} style={styles.user} />
+        <TouchableOpacity style={styles.userButton} onPress={handleUserLogoPress}>
+        <Image source={require('./Images/profile-user.png')} style={styles.user} />
         </TouchableOpacity>
       </View>
       <View style={styles.body}>

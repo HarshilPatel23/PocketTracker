@@ -68,7 +68,7 @@ const AddExpense = () => {
         <Text style={styles.heading}>Pocket Tracker</Text>
       </View>
       <View style={styles.body}>
-      <Text style={styles.heading1}>Add Expense</Text>
+      <Text style={styles.heading1}>Expense Name:</Text>
       <TextInput
         style={styles.input}
         placeholder="Expense Name"
@@ -109,6 +109,8 @@ const AddExpense = () => {
           />
         </View>
       )}
+
+      <Text style={styles.heading1}>Expense Amount:</Text>
       
       <TextInput
         style={styles.input}
