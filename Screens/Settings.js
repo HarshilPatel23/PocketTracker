@@ -1,6 +1,6 @@
-import React, { useState, useRef } from 'react';
-import { StyleSheet, Text, View, StatusBar, Image, TextInput, TouchableOpacity } from 'react-native';
-import { useAuth, updateUserInfrmation } from '../firebaseUtil';
+import { StyleSheet, Text, View, StatusBar, Image, TextInput, TouchableOpacity } from 'react-native'
+import React, {useRef} from 'react'
+import { useAuth,updateUserInfrmation } from '../utils/user.utils';
 
 const Settings = () => {
   const { user, updateProfile, reauthenticateUser } = useAuth();

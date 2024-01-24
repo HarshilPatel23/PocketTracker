@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, StatusBar, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard,Alert  } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
-import { addExpense, useAuth } from '../firebaseUtil';
+import { addExpense } from '../utils/expense.utils';
+import { useAuth } from '../utils/user.utils';
 const AddExpense = () => {
   const {user,categories,subCategories,fetchCategoriesWithSubcategories}=useAuth();
   const [expenseName, setExpenseName] = useState('');

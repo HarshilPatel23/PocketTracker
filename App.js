@@ -9,7 +9,7 @@ import AddExpense from './Screens/AddExpense';
 import ViewReports from './Screens/ViewReports';
 import navigation from './Screens/BottomNav/navigation';
 import ExpenseList from './Screens/ExpenseList';
-import { AuthProvider } from './firebaseUtil';
+import { AuthProvider } from './utils/user.utils';
 import Settings from './Screens/Settings';
 
 const Stack = createNativeStackNavigator();

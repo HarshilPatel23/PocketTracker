@@ -1,7 +1,7 @@
 import { StyleSheet, View, StatusBar, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import { Button, TextInput,Text } from 'react-native-paper';
 import React, { useState } from 'react';
-import { auth, useAuth } from '../firebaseUtil';
+import { useAuth } from '../utils/user.utils';
 import {signInWithEmailAndPassword} from 'firebase/auth'
 
 const SignIn = ({navigation}) => {
@@ -12,7 +12,7 @@ const SignIn = ({navigation}) => {
     const {signIn}=useAuth();
 
 
-    const FirebaseAuth=auth
+    // const FirebaseAuth=auth
     // const signIn=async ()=>{
     //     setloading(true);
     //     try

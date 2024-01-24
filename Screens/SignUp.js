@@ -1,7 +1,7 @@
 import { StyleSheet, View, StatusBar, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import { Button, TextInput,Text } from 'react-native-paper';
 import React, { useState } from 'react';
-import { addUser,createUserDocumentFromAuth} from '../firebaseUtil';
+import { addUser,createUserDocumentFromAuth } from '../utils/user.utils';
 
 const SignUp = ({navigation}) => {
     const [userEmail,setUserEmail]=useState('')

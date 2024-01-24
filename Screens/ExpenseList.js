@@ -1,7 +1,7 @@
 import { ScrollView, StyleSheet, Text, View, RefreshControl,StatusBar } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { getUserExpenses, useAuth } from '../firebaseUtil';
-
+import { getUserExpenses } from '../utils/expense.utils';
+import { useAuth } from '../utils/user.utils';
 const Settings = () => {
   const [userExpenses, setUserExpenses] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -14,6 +14,11 @@ const Settings = () => {
     // Fetch the updated user expenses
     getUserExpenses(user.uid)
       .then((expenses) => {
+        expenses.sort((a, b) => {
+          const dateA = a.addDate.toDate();
+          const dateB = b.addDate.toDate();
+          return dateB - dateA;
+        });
         setUserExpenses(expenses);
         const currentMonthExpenses = userExpenses.filter((expense) => {
           const expenseDate = expense.addDate.toDate()
@@ -21,7 +26,9 @@ const Settings = () => {
           return expenseDate.getMonth() === currentDate.getMonth() &&
                  expenseDate.getFullYear() === currentDate.getFullYear();
         });;
+        
         setExpensesToShow(currentMonthExpenses)
+        
         console.log("to show",expensesToShow)
         setRefreshing(false);
       })
