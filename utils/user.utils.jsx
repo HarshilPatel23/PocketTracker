@@ -118,6 +118,21 @@ export const AuthProvider = ({ children }) => {
 // create a user,category and sub category  info so can be asccesiable all the pages where we want to use
 export const useAuth = () => useContext(AuthContext);
 
+//function to get user info
+
+export const getUserInfo=async(userId)=>{
+  const [userInfo,setUserInfo]=useState({})
+    const userDocRef=await doc(db,'users',userId);
+    const usersnapShot= await getDocs(userDocRef);
+    if (usersnapShot.exists()){
+      // return usersnapShot.data();
+      setUserInfo(usersnapShot.data())
+      console.log("user info",userInfo)
+      return userInfo;
+
+    }
+}
+
 // function to update users information such as password and name
 
 export const updateUserInfrmation=async(userId,userName,userPassword)=>{

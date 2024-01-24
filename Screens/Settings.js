@@ -1,18 +1,20 @@
 import { StyleSheet, Text, View, StatusBar, Image, TextInput, TouchableOpacity } from 'react-native'
-import React, {useRef} from 'react'
-import { useAuth,updateUserInfrmation } from '../utils/user.utils';
+import React, {useRef, useState} from 'react'
+import { useAuth,updateUserInfrmation, getUserInfo } from '../utils/user.utils';
 
 const Settings = () => {
-  const { user, updateProfile, reauthenticateUser } = useAuth();
-  const [name, setName] = useState(user.userName || '');
-  const [phoneNumber, setPhoneNumber] = useState(user.phoneNumber || '');
+  const { user } = useAuth();
+ const {userinfo} = getUserInfo(user.uid);
+  const [name, setName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [RenewPassword, setReNewPassword] = useState('');
   const passwordRef = useRef();
 
   const handleUpdateProfile = async () => {
-    
+    updateUserInfrmation(user.uid,name)
+
   };
 
 
@@ -27,7 +29,7 @@ const Settings = () => {
           <Image source={require('./Images/profile-user.png')} style={styles.user} />
         </View>
         <View style={styles.body2}>
-          <Text style={styles.info}>Name: {user.userName}</Text>
+          {/* <Text style={styles.info}>Name: {userinfo.userName}</Text> */}
           <Text style={styles.info}>Email: {user.email}</Text>
           {phoneNumber && <Text style={styles.info}>Phone Number: {phoneNumber}</Text>}
 

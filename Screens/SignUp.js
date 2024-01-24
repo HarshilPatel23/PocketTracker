@@ -8,7 +8,6 @@ const SignUp = ({navigation}) => {
     const [userPassword,setUserPassword]=useState('')
     const [userRePassword,setUserRePassword]=useState('')
     const [userName,setUserName]=useState('')
-    const [userPhonenumber,setUserPhonenumber]=useState('')
     const [loading,setloading]=useState(false)
     const signUp=async ()=>{
       if(userPassword!=userRePassword){
@@ -17,7 +16,7 @@ const SignUp = ({navigation}) => {
       setloading(true);
       try
         {
-          const user=await addUser(userEmail,userPassword, userName, userPhonenumber)
+          const user=await addUser(userEmail,userPassword, userName)
           console.log("user created",user);
           console.log("adding to db")
           await createUserDocumentFromAuth(user)
@@ -61,13 +60,7 @@ const SignUp = ({navigation}) => {
       secureTextEntry
       right={<TextInput.Icon icon="eye" />}
     />
-    <TextInput style={styles.input}
-      label="Phone Number"
-      value={userPhonenumber}
-      keyboardType="numeric"
-      onChangeText={(number)=>setUserPhonenumber(number)}
-    />
-      
+  
 
       <Button style={styles.button} mode="contained" onPress={signUp}>
         Sign Up
