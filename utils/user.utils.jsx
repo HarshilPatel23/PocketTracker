@@ -1,4 +1,4 @@
-import {doc,getDoc,setDoc,collection,getDocs, addDoc} from 'firebase/firestore'
+import {doc,getDoc,setDoc,collection,getDocs, addDoc, updateDoc} from 'firebase/firestore'
 import { db,auth } from '../firebaseUtil';
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import {signInWithEmailAndPassword} from 'firebase/auth'
@@ -120,29 +120,32 @@ export const useAuth = () => useContext(AuthContext);
 
 //function to get user info
 
-export const getUserInfo=async(userId)=>{
-  const [userInfo,setUserInfo]=useState({})
-    const userDocRef=await doc(db,'users',userId);
-    const usersnapShot= await getDocs(userDocRef);
-    if (usersnapShot.exists()){
-      // return usersnapShot.data();
-      setUserInfo(usersnapShot.data())
-      console.log("user info",userInfo)
-      return userInfo;
+export const getUserInfo = async (userId) => {
+  try {
+    const userDocRef = doc(db, 'users', userId);
+    const userSnapshot = await getDoc(userDocRef);
 
+    if (userSnapshot.exists()) {
+      return { id: userSnapshot.id, ...userSnapshot.data() };
+    } else {
+      console.log('User not found');
+      return null;
     }
-}
+  } catch (error) {
+    console.error('Error getting user info:', error);
+    throw error; 
+  }
+};
 
 // function to update users information such as password and name
 
-export const updateUserInfrmation=async(userId,userName,userPassword)=>{
+export const updateUserInformation=async(userId,userName)=>{
     const userDocRef=await doc(db,'users',userId);
     const usersnapShot= await getDoc(userDocRef);
     if (usersnapShot.exists()){
       try{
-        await usersnapShot.ref.update({
+        await updateDoc(userDocRef,{
           fullName:userName,
-          password:userPassword
         })
       }catch(error){
         console.log(error)
