@@ -25,7 +25,7 @@ const Home = ({ navigation }) => {
 
       <View style={styles.body2}>
         
-        <Text style={styles.heading1}>{user.uid}</Text>
+        <Text style={styles.heading1}>{user.displayName}</Text>
         <Text style={styles.heading1}>Dashboard</Text>
 
         <View style={styles.button}>
