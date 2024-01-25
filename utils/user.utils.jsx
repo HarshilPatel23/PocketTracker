@@ -1,7 +1,8 @@
 import {doc,getDoc,setDoc,collection,getDocs, addDoc} from 'firebase/firestore'
 import { db,auth } from '../firebaseUtil';
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import {signInWithEmailAndPassword} from 'firebase/auth'
+import {signInWithEmailAndPassword,createUserWithEmailAndPassword} from 'firebase/auth'
+import { updateProfile } from 'firebase/auth';
 // create user document in database
 export const createUserDocumentFromAuth=async(userAuth)=>{
     const userDocRef=await doc(db,'users',userAuth.user.uid);
@@ -26,9 +27,29 @@ export const createUserDocumentFromAuth=async(userAuth)=>{
 
 
 // signup user through email and password
-export const addUser=async(userEmail,userPassword)=>{
-    const userAuth=await createUserWithEmailAndPassword(auth,userEmail,userPassword);
-    return userAuth;
+export const addUser=async(userEmail,userPassword,userName)=>{
+    var user;
+    await createUserWithEmailAndPassword(auth,userEmail,userPassword)
+    .then(function(userCredential) {
+        // Signed up successfully
+        user=userCredential
+        // Update the user's display name
+        updateProfile(userCredential.user,{
+          displayName: userName
+        }).then(function() {
+          // Display name updated successfully
+          console.log("User signed up with display name:", userCredential.user.displayName);
+        }).catch(function(error) {
+          // An error occurred while updating display name
+          console.error("Error updating display name:", error.message);
+        });
+    
+    })
+      .catch(function(error) {
+        // Handle errors during the signup process
+        console.error("Error signing up:", error.message);
+    });
+    return user;
 }
 
 const AuthContext = createContext();
