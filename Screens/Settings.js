@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View, StatusBar, Image, TextInput, TouchableOpacity } from 'react-native'
-import React, {useRef, useState} from 'react'
-import { useAuth,updateUserInfrmation, getUserInfo } from '../utils/user.utils';
+import React, {useRef, useState, useEffect} from 'react'
+import { useAuth,updateUserInformation, getUserInfo } from '../utils/user.utils';
 
 const Settings = () => {
   const { user } = useAuth();
- const {userinfo} = getUserInfo(user.uid);
+  const [userInfo, setUserInfo] = useState(null);
   const [name, setName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [oldPassword, setOldPassword] = useState('');
@@ -13,9 +13,23 @@ const Settings = () => {
   const passwordRef = useRef();
 
   const handleUpdateProfile = async () => {
-    updateUserInfrmation(user.uid,name)
+    updateUserInformation(user.uid,name)
 
   };
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const userData = await getUserInfo(user.uid);
+        setUserInfo(userData);
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      }
+    };
+
+    fetchUserInfo();
+  }, [user.uid]);
+  
 
 
   return (
@@ -29,8 +43,8 @@ const Settings = () => {
           <Image source={require('./Images/profile-user.png')} style={styles.user} />
         </View>
         <View style={styles.body2}>
-          {/* <Text style={styles.info}>Name: {userinfo.userName}</Text> */}
-          <Text style={styles.info}>Email: {user.email}</Text>
+          <Text style={styles.info}>Name: {userInfo?.fullName}</Text>
+          <Text style={styles.info}>Email: {userInfo?.emailAddress}</Text>
           {phoneNumber && <Text style={styles.info}>Phone Number: {phoneNumber}</Text>}
 
           <Text style={styles.info}>Update Information:</Text>
