@@ -1,14 +1,38 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, StatusBar, TouchableOpacity, Image } from 'react-native';
 import { useAuth } from '../utils/user.utils';
 
-const Home = ({ navigation }) => {
-  const {user}=useAuth();
-  console.log("home",user)
+const Home = ({ navigation,route }) => {
+  const { reloadUser } = useAuth();
+  const {user,reload}=route.params;
+    const [isProfileUpdated, setIsProfileUpdated] = useState(false);
 
-  const handleUserLogoPress = () => {
-    navigation.navigate('Settings');
+  console.log("home",user)
+  useEffect(() => {
+    if (reload===true) {
+      reloadUser();
+      console.log('Profile Updated!');
+
+      // Reset the state to false after handling the update
+      setIsProfileUpdated(false);
+    }
+  }, [reload]);
+  // useEffect(() => {
+  //   if (isProfileUpdated) {
+  //     reloadUser();
+  //     console.log('Profile Updated!');
+
+  //     // Reset the state to false after handling the update
+  //     setIsProfileUpdated(false);
+  //   }
+  // }, [isProfileUpdated]);
+
+  const reloadHomeScreen = () => {
+    setIsProfileUpdated(true);
   };
+  const handleUserLogoPress = () => {
+    navigation.navigate('Settings',{reloadHomeScreen: reloadHomeScreen(),setIsProfileUpdated: setIsProfileUpdated,});
+      };
 
   return (
     <View style={styles.container}>

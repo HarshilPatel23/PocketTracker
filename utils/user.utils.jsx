@@ -3,6 +3,7 @@ import { db,auth } from '../firebaseUtil';
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import {signInWithEmailAndPassword,createUserWithEmailAndPassword} from 'firebase/auth'
 import { updateProfile } from 'firebase/auth';
+
 // create user document in database
 export const createUserDocumentFromAuth=async(userAuth)=>{
     const userDocRef=await doc(db,'users',userAuth.user.uid);
@@ -66,7 +67,11 @@ export const AuthProvider = ({ children }) => {
 
     return unsubscribe;
   }, []);
-
+  const reloadUser=()=>{
+    setUser(null)
+    setUser(auth.currentUser)
+    console.log("reloaded",user)
+  }
   const signIn = async (email, password) => {
     try {
       const response=await signInWithEmailAndPassword(auth,email, password);
@@ -131,7 +136,7 @@ export const AuthProvider = ({ children }) => {
   
 
   return (
-    <AuthContext.Provider value={{ user, signIn, signOut,categories,subCategories,fetchCategoriesWithSubcategories }}>
+    <AuthContext.Provider value={{ user, signIn, signOut,categories,subCategories,fetchCategoriesWithSubcategories,reloadUser}}>
       {children}
     </AuthContext.Provider>
   );
@@ -160,8 +165,8 @@ export const getUserInfo = async (userId) => {
 
 // function to update users information such as password and name
 
-export const updateUserInformation=async(userId,userName)=>{
-    const userDocRef=await doc(db,'users',userId);
+export const updateUserInformation=async(user,userName)=>{
+    const userDocRef=await doc(db,'users',user.uid);
     const usersnapShot= await getDoc(userDocRef);
     if (usersnapShot.exists()){
       try{
@@ -172,6 +177,15 @@ export const updateUserInformation=async(userId,userName)=>{
         console.log(error)
       }
     }
+    updateProfile(user,{
+      displayName: userName
+    }).then(function() {
+      // Display name updated successfully
+      console.log("Changed name successfully:", user.displayName);
+    }).catch(function(error) {
+      // An error occurred while updating display name
+      console.error("Error updating display name:", error.message);
+    });
 }
 
 // function to delete users

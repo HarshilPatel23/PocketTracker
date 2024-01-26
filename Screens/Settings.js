@@ -2,8 +2,10 @@ import { StyleSheet, Text, View, StatusBar, Image, TextInput, TouchableOpacity }
 import React, {useRef, useState, useEffect} from 'react'
 import { useAuth,updateUserInformation, getUserInfo } from '../utils/user.utils';
 
-const Settings = () => {
-  const { user } = useAuth();
+
+const Settings = ({ navigation,route }) => {
+  const{reloadHomeScreen,setIsProfileUpdated}=route.params;
+  const { user,reloadUser } = useAuth();
   const [userInfo, setUserInfo] = useState(null);
   const [name, setName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -13,8 +15,11 @@ const Settings = () => {
   const passwordRef = useRef();
 
   const handleUpdateProfile = async () => {
-    updateUserInformation(user.uid,name)
-
+    updateUserInformation(user,name)
+    route.params.reloadHomeScreen;
+    reloadUser();
+    setIsProfileUpdated(true);
+    navigation.navigate('navigation',{screen:'Home'},{reload: true,});
   };
 
   useEffect(() => {
