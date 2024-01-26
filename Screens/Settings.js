@@ -5,7 +5,7 @@ import { useAuth,updateUserInformation, getUserInfo } from '../utils/user.utils'
 
 const Settings = ({ navigation,route }) => {
   const{reloadHomeScreen,setIsProfileUpdated}=route.params;
-  const { user,reloadUser } = useAuth();
+  const { user,reloadUser, signOut } = useAuth();
   const [userInfo, setUserInfo] = useState(null);
   const [name, setName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -34,6 +34,12 @@ const Settings = ({ navigation,route }) => {
 
     fetchUserInfo();
   }, [user.uid]);
+
+  const handleLogout = () => {
+    signOut();
+    navigation.navigate('SignIn');
+  }
+
   
 
 
@@ -48,11 +54,14 @@ const Settings = ({ navigation,route }) => {
           <Image source={require('./Images/profile-user.png')} style={styles.user} />
         </View>
         <View style={styles.body2}>
-          <Text style={styles.info}>Name: {userInfo?.fullName}</Text>
-          <Text style={styles.info}>Email: {userInfo?.emailAddress}</Text>
-          {phoneNumber && <Text style={styles.info}>Phone Number: {phoneNumber}</Text>}
 
-          <Text style={styles.info}>Update Information:</Text>
+          <View style={styles.textbody}>
+            <Text style={styles.info}>Name: {userInfo?.fullName}</Text>
+            <Text style={styles.info}>Email: {userInfo?.emailAddress}</Text>
+          </View>
+
+
+          <Text style={styles.info}>UPDATE YOUR INFORMATIONS:</Text>
 
           <TextInput
             style={styles.input}
@@ -84,6 +93,10 @@ const Settings = ({ navigation,route }) => {
           />
           <TouchableOpacity style={styles.button} onPress={handleUpdateProfile}>
             <Text style={styles.buttonText}>Update Profile</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+            <Text style={styles.logoutButtonText}>Logout</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -128,6 +141,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: '5%',
   },
+  textbody: {
+    flexDirection: 'column',
+    marginTop: '5%',
+    marginBottom: '5%',
+  },
   heading1: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -157,6 +175,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 15,
     marginTop: 20,
+    width: '50%',
   },
   buttonText: {
     color: 'white',
@@ -166,7 +185,19 @@ const styles = StyleSheet.create({
   info: {
     fontSize: 20,
     fontWeight: 'bold',
-    padding: '5%',
+    padding: '2%',
     color: 'rgb(118, 32, 171)',
+  },
+  logoutButton: {
+    backgroundColor: 'red',
+    padding: 10,
+    borderRadius: 15,
+    marginTop: 20,
+    width: '50%',
+  },
+  logoutButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });

@@ -1,22 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, StatusBar, TouchableOpacity, Image } from 'react-native';
 import { useAuth } from '../utils/user.utils';
+import { getUserExpenses, filterExpenses, totalExpense } from '../utils/expense.utils';
 
 const Home = ({ navigation,route }) => {
   const { reloadUser } = useAuth();
   const {user,reload}=route.params;
-    const [isProfileUpdated, setIsProfileUpdated] = useState(false);
+  const [isProfileUpdated, setIsProfileUpdated] = useState(false);
+  const [expensesToShow,setExpensesToShow]=useState([])
 
   console.log("home",user)
   useEffect(() => {
-    if (reload===true) {
+    
+
+    if (reload === true) {
       reloadUser();
       console.log('Profile Updated!');
-
-      // Reset the state to false after handling the update
       setIsProfileUpdated(false);
     }
+
+    getUserExpenses(user.uid)
+      .then((expenses) => {
+        const x = new Date();
+        const z = filterExpenses(expenses, "monthly",x);
+        setExpensesToShow(z);
+        console.log("to show", expensesToShow);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, [reload]);
+
+
   // useEffect(() => {
   //   if (isProfileUpdated) {
   //     reloadUser();
@@ -48,12 +63,11 @@ const Home = ({ navigation,route }) => {
       <View style={styles.body}>
 
       <View style={styles.body2}>
-        
+        <View style={styles.displayname}>
         <Text style={styles.heading1}>{user.displayName}</Text>
-        <Text style={styles.heading1}>Dashboard</Text>
-
+        </View>
         <View style={styles.button}>
-        <Text style={styles.heading1}>$X Total Expense</Text>
+        <Text style={styles.heading1}>$ {totalExpense(expensesToShow)}</Text>
         </View>
       </View>
 
@@ -141,17 +155,25 @@ const styles = StyleSheet.create({
     marginTop: '-12%',
   },
   heading1:{
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
     margin: 10,
     color:'white',
+    justifySelf: 'center',
+    alignSelf: 'center',
+    textAlign: 'center',
   },
   button: {
     backgroundColor: 'rgb(118, 32, 171)',
     width: '100%',
     height: '40%',
     borderRadius: 30,
-    alignItems: 'center',
     justifyContent: 'center',
   },
+  displayname:{
+    width: '100%',
+    height: '60%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
 });
