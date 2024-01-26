@@ -48,5 +48,63 @@ export const getUserExpenses=async(userId)=>{
       return expenses
     }
 }
+
+export const filterExpenses=(expenses,type,typeValue)=>{
+  expenses.sort((a, b) => {
+    const dateA = a.addDate.toDate();
+    const dateB = b.addDate.toDate();
+    return dateB - dateA;
+  }); // decending order newer first 
+  var filteredExpenses=null;
+  var sum=0;
+  switch (type) {
+    case "category":
+      filteredExpenses=expenses.filter((expense)=>{
+        return expense.category===typeValue
+      })
+      break;
+    case "subCategory":
+      filteredExpenses=expenses.filter((expense)=>{
+        return expense.subCategory===typeValue
+      })
+      break;
+    case "monthly":
+       filteredExpenses = expenses.filter((expense) => {
+        const expenseDate = expense.addDate.toDate()
+        const enteredDate = typeValue;
+        if( enteredDate instanceof Date){
+          return expenseDate.getMonth() === enteredDate.getMonth() &&
+               expenseDate.getFullYear() === enteredDate.getFullYear();
+        }else{
+          return Error("passed data is not a date")
+        }
+      });;
+
+      break;
+    case "yearly":
+      filteredExpenses = expenses.filter((expense) => {
+        const expenseDate = expense.addDate.toDate()
+        const enteredDate = typeValue;
+        if( enteredDate instanceof Date){
+          return expenseDate.getFullYear() === enteredDate.getFullYear();
+        }else{
+          return Error("passed data is not a date")
+        }
+      });;
+
+      break;
   
-  
+    default:
+      return expenses
+      break;
+  }
+  return filteredExpenses;
+}
+
+export const totalExpense=(expenses)=>{
+  var sum=0;
+  expenses.forEach((expense)=>{
+    sum+=expense.amount
+  })
+  return sum;
+}

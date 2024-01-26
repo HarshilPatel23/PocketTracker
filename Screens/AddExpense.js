@@ -6,7 +6,7 @@ import { useAuth } from '../utils/user.utils';
 const AddExpense = () => {
   const {user,categories,subCategories,fetchCategoriesWithSubcategories}=useAuth();
   const [expenseName, setExpenseName] = useState('');
-  const [expenseAmount, setExpenseAmount] = useState('');
+  const [expenseAmount, setExpenseAmount] = useState(null);
 
   // fetch categories from the db
   const [category, setCategory] = useState('');
@@ -59,6 +59,10 @@ const AddExpense = () => {
       setExpenseAmount('');
     }
   };
+  const handleExpenseAmount=(text)=>{
+    amount=text.replace(/\$/g, '');
+    setExpenseAmount(parseFloat(amount))
+  }
 
   
   return (
@@ -112,7 +116,6 @@ const AddExpense = () => {
       )}
 
       <Text style={styles.heading1}>Expense Amount:</Text>
-      
       <TextInput
         style={styles.input}
         placeholder="Expense Amount"
@@ -121,7 +124,7 @@ const AddExpense = () => {
         value={expenseAmount}
         onFocus={handleFocus}
         onBlur={handleBlur}
-        onChangeText={(text) => setExpenseAmount(text)}
+        onChangeText={(text) =>handleExpenseAmount(text) }
       />
       <TouchableOpacity style={styles.addButton} onPress={handleAddExpense}>
         <Text style={styles.buttonText}>Add Expense</Text>
