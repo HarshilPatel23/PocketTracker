@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, StatusBar, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, View, Text, StatusBar, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { useAuth } from '../utils/user.utils';
-import { getUserExpenses, filterExpenses, totalExpense } from '../utils/expense.utils';
+import { getUserExpenses, filterExpenses, totalExpense, getMonthlyExpenseByCategory } from '../utils/expense.utils';
+import { VictoryPie } from 'victory-native';
 
 const Home = ({ navigation,route }) => {
   const { reloadUser } = useAuth();
@@ -11,8 +12,7 @@ const Home = ({ navigation,route }) => {
 
   console.log("home",user)
   useEffect(() => {
-    
-
+  
     if (reload === true) {
       reloadUser();
       console.log('Profile Updated!');
@@ -25,13 +25,15 @@ const Home = ({ navigation,route }) => {
         const z = filterExpenses(expenses, "monthly",x);
         setExpensesToShow(z);
         console.log("to show", expensesToShow);
+
+      const chartData = getMonthlyExpenseByCategory(expensesToShow);
+      console.log("Chart Data:", chartData);
       })
       .catch((error) => {
         console.log(error);
       });
   }, [reload]);
-
-
+  
   // useEffect(() => {
   //   if (isProfileUpdated) {
   //     reloadUser();
@@ -49,8 +51,16 @@ const Home = ({ navigation,route }) => {
     navigation.navigate('Settings',{reloadHomeScreen: reloadHomeScreen(),setIsProfileUpdated: setIsProfileUpdated,});
       };
 
+  const chartData = getMonthlyExpenseByCategory(expensesToShow);
+  const pieChartData = Object.keys(chartData).map((category) => ({
+    x: category,
+    y: chartData[category],
+  }));
+  let colorScale = ['tomato', 'orange', 'gold', 'blue', 'navy']; //assign colors as par number of catagories.
+
   return (
     <View style={styles.container}>
+
       <StatusBar style="light" />
       <View style={styles.topbar}>
         <View style={styles.centered}>
@@ -64,22 +74,37 @@ const Home = ({ navigation,route }) => {
 
       <View style={styles.body2}>
         <View style={styles.displayname}>
+        <Text style={styles.heading1}>Welcome</Text>
         <Text style={styles.heading1}>{user.displayName}</Text>
         </View>
         <View style={styles.button}>
-        <Text style={styles.heading1}>$ {totalExpense(expensesToShow)}</Text>
+        <Text style={styles.heading2}>Your Total Monthly Expneses:</Text>
+        <Text style={styles.heading2}>$ {totalExpense(expensesToShow)}</Text>
         </View>
       </View>
 
-        <View style={styles.dashboardContent}>
-          <Text style={styles.label}>Total Expenses:</Text>
-          <Text style={styles.value}>$500</Text>
-        </View>
-        <View style={styles.dashboardContent}>
-          <Text style={styles.label}>Total Income:</Text>
-          <Text style={styles.value}>$700</Text>
-        </View>
-      
+      <View style={styles.body3}>
+      <ScrollView >
+        <Text style={styles.heading3}>Expense Overview:</Text>
+        <VictoryPie
+          data={pieChartData}
+          colorScale={colorScale}
+          innerRadius={60}
+          labelRadius={({innerRadius}) => innerRadius + 10 }
+          labels={({ datum }) => `${datum.x}: \n $ ${datum.y}`}
+          style={{
+            labels: {
+              fill: 'white',
+              fontSize: 12,
+              fontWeight: 'bold',
+            },
+            parent: {
+              marginTop: 20,
+            },
+          }}
+        />
+      </ScrollView>
+      </View>
       </View>
     </View>
   );
@@ -94,24 +119,24 @@ const styles = StyleSheet.create({
     },
     topbar:{
         width: '100%',
-        height:'5%',
+        height:'6%',
         textAlign: 'center',
-        justifyContent: 'space-around',
         flexDirection: 'row',
         marginTop: '15%',
     },
     userButton: {
       alignSelf: 'flex-end',
-      paddingRight: '5%',
+      paddingRight: '2%',
       
     },
     user: {
-      width: 40,
-      height: 40,
+      width: 50,
+      height: 50,
     },
     centered: {
-      flex: 2,
+      flex: 1,
       alignItems: 'center',
+      justifyContent: 'center',
     },
     heading:{
         color: 'white',
@@ -127,16 +152,9 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       width: '100%',
       height: '100%',
-      marginTop: '15%',
-      marginBottom: '1%',
+      marginTop: '12%',
       
     },
-  dashboardContent: {
-    borderRadius: 20,
-    width: '80%',
-    height: '15%',
-    marginBottom: '5%',
-  },
   label: {
     fontSize: 18,
     fontWeight: 'bold',
@@ -157,9 +175,8 @@ const styles = StyleSheet.create({
   heading1:{
     fontSize: 28,
     fontWeight: 'bold',
-    margin: 10,
+    margin: 5,
     color:'white',
-    justifySelf: 'center',
     alignSelf: 'center',
     textAlign: 'center',
   },
@@ -175,5 +192,25 @@ const styles = StyleSheet.create({
     height: '60%',
     justifyContent: 'center',
     alignItems: 'center',
-  }
+  },
+  body3:{
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  heading2:{
+    fontSize: 18,
+    fontWeight: 'bold',
+    color:'white',
+    alignSelf: 'center',
+    textAlign: 'center',
+  },
+  heading3:{
+    fontSize: 28,
+    fontWeight: 'bold',
+    margin: 10,
+    color:'black',
+    alignSelf: 'center',
+    textAlign: 'center',
+    marginBottom: '-12%',
+  },
 });
