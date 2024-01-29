@@ -1,7 +1,7 @@
 import {doc,getDoc,setDoc,collection,getDocs, addDoc, updateDoc} from 'firebase/firestore'
 import { db,auth } from '../firebaseUtil';
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import {signInWithEmailAndPassword,createUserWithEmailAndPassword} from 'firebase/auth'
+import {signInWithEmailAndPassword,createUserWithEmailAndPassword, updatePassword} from 'firebase/auth'
 import { updateProfile } from 'firebase/auth';
 
 // create user document in database
@@ -187,6 +187,35 @@ export const updateUserInformation=async(user,userName)=>{
       console.error("Error updating display name:", error.message);
     });
 }
+
+//function to update password of the user
+
+export const updateUserPassword=async(user,oldPassword,newPassword)=>{
+    const userDocRef=await doc(db,'users',user.uid);
+    const usersnapShot= await getDoc(userDocRef);
+    if (usersnapShot.exists()){
+      try{
+        await updateDoc(userDocRef,{
+          password:newPassword
+        })
+      }catch(error){
+        console.log(error)
+      }
+    }
+    const credential = signInWithEmailAndPassword(auth, user.email, oldPassword);
+    credential.then(function(userCredential) {
+      console.log("signed in")
+      updatePassword(userCredential.user, newPassword)
+      .then(function() {
+        console.log("password updated")
+      }).catch(function(error) {
+        console.log("error",error)
+      });
+    }).catch(function(error) {
+      console.log("error",error)
+    });
+}
+
 
 // function to delete users
 

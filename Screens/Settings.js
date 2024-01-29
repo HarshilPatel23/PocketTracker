@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View, StatusBar, Image, TextInput, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, StatusBar, Image, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import React, {useRef, useState, useEffect} from 'react'
-import { useAuth,updateUserInformation, getUserInfo } from '../utils/user.utils';
+import { useAuth,updateUserInformation, getUserInfo, updateUserPassword  } from '../utils/user.utils';
 
 
 const Settings = ({ navigation,route }) => {
@@ -8,18 +8,24 @@ const Settings = ({ navigation,route }) => {
   const { user,reloadUser, signOut } = useAuth();
   const [userInfo, setUserInfo] = useState(null);
   const [name, setName] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [RenewPassword, setReNewPassword] = useState('');
+  const [passwordUpdateError, setPasswordUpdateError] = useState(null)
   const passwordRef = useRef();
 
   const handleUpdateProfile = async () => {
-    updateUserInformation(user,name)
-    route.params.reloadHomeScreen;
-    reloadUser();
-    setIsProfileUpdated(true);
-    navigation.navigate('navigation',{screen:'Home'},{reload: true,});
+    try {
+      await updateUserInformation(user,name);
+      await updateUserPassword(user, oldPassword, RenewPassword);
+      route.params.reloadHomeScreen;
+      reloadUser();
+      setIsProfileUpdated(true);
+      navigation.navigate('navigation',{screen:'Home'},{reload: true,});
+    } catch (error) { 
+      console.error('Error updating user profile:', error);
+      setPasswordUpdateError(error.message);
+    }
   };
 
   useEffect(() => {
@@ -44,6 +50,7 @@ const Settings = ({ navigation,route }) => {
 
 
   return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
     <View style={styles.container}>
       <StatusBar style="light" />
       <View style={styles.topbar}>
@@ -94,6 +101,9 @@ const Settings = ({ navigation,route }) => {
           <TouchableOpacity style={styles.button} onPress={handleUpdateProfile}>
             <Text style={styles.buttonText}>Update Profile</Text>
           </TouchableOpacity>
+            {passwordUpdateError && (
+              <Text style={styles.errorText}>{passwordUpdateError}</Text>
+            )}
 
           <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
             <Text style={styles.logoutButtonText}>Logout</Text>
@@ -101,6 +111,7 @@ const Settings = ({ navigation,route }) => {
         </View>
       </View>
     </View>
+    </TouchableWithoutFeedback>
   );
 };
 

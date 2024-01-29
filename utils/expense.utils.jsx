@@ -49,6 +49,7 @@ export const getUserExpenses=async(userId)=>{
     }
 }
 
+
 export const filterExpenses=(expenses,type,typeValue)=>{
   expenses.sort((a, b) => {
     const dateA = a.addDate.toDate();
@@ -101,10 +102,24 @@ export const filterExpenses=(expenses,type,typeValue)=>{
   return filteredExpenses;
 }
 
-export const totalExpense=(expenses)=>{
+export const totalExpense = (expenses)=>{
   var sum=0;
   expenses.forEach((expense)=>{
     sum+=expense.amount
   })
   return sum;
+}
+
+// function to get the total expenses of each catagory for the logged user for last month
+export const getMonthlyExpenseByCategory = (expenses)=>{
+  const monthlyExpenseByCategory = {}
+  const monthlyExpense = filterExpenses(expenses,"monthly",new Date())
+  monthlyExpense.forEach((expense) => {
+    if(monthlyExpenseByCategory[expense.category]){
+      monthlyExpenseByCategory[expense.category]+=expense.amount
+    }else{
+      monthlyExpenseByCategory[expense.category]=expense.amount
+    }
+  })
+  return monthlyExpenseByCategory
 }
