@@ -107,7 +107,7 @@ export const totalExpense = (expenses)=>{
   expenses.forEach((expense)=>{
     sum+=expense.amount
   })
-  return sum;
+  return sum.toFixed(2);
 }
 
 // function to get the total expenses of each catagory for the logged user for last month

@@ -24,10 +24,6 @@ const Home = ({ navigation,route }) => {
         const x = new Date();
         const z = filterExpenses(expenses, "monthly",x);
         setExpensesToShow(z);
-        console.log("to show", expensesToShow);
-
-      const chartData = getMonthlyExpenseByCategory(expensesToShow);
-      console.log("Chart Data:", chartData);
       })
       .catch((error) => {
         console.log(error);

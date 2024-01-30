@@ -54,7 +54,11 @@ const Settings = ({ navigation,route }) => {
     <View style={styles.container}>
       <StatusBar style="light" />
       <View style={styles.topbar}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Image source={require('./Images/back.png')} style={[styles.back, { tintColor: 'white' }]} />
+        </TouchableOpacity>
         <Text style={styles.heading}>Settings</Text>
+
       </View>
       <View style={styles.body}>
         <View style={styles.userimage}>
@@ -124,17 +128,26 @@ const styles = StyleSheet.create({
   },
   topbar: {
     backgroundColor: 'rgb(118, 32, 171)',
+    flexDirection: 'row',
+    alignItems: 'center',
     width: '100%',
     height: '18%',
+    justifyContent:'flex-start',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
     borderBottomLeftRadius: 50,
     borderBottomRightRadius: 50,
+  },
+  back: {
+    width: 30,
+    height: 30,
   },
   heading: {
     color: 'white',
     fontSize: 25,
     fontWeight: 'bold',
     textAlign: 'center',
-    paddingTop: '15%',
+    marginLeft:'30%',
   },
   body: {
     padding: 10,
@@ -211,4 +224,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
+ 
 });
