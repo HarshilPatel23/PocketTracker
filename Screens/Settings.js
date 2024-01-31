@@ -3,9 +3,8 @@ import React, {useRef, useState, useEffect} from 'react'
 import { useAuth,updateUserInformation, getUserInfo, updateUserPassword  } from '../utils/user.utils';
 
 
-const Settings = ({ navigation,route }) => {
-  const{reloadHomeScreen,setIsProfileUpdated}=route.params;
-  const { user,reloadUser, signOut } = useAuth();
+const Settings = ({ navigation }) => {
+  const { user, screenReload,signOut,setScreenReload } = useAuth();
   const [userInfo, setUserInfo] = useState(null);
   const [name, setName] = useState('');
   const [oldPassword, setOldPassword] = useState('');
@@ -17,14 +16,16 @@ const Settings = ({ navigation,route }) => {
   const handleUpdateProfile = async () => {
     try {
       await updateUserInformation(user,name);
-      await updateUserPassword(user, oldPassword, RenewPassword);
-      route.params.reloadHomeScreen;
-      reloadUser();
-      setIsProfileUpdated(true);
-      navigation.navigate('navigation',{screen:'Home'},{reload: true,});
+      // await updateUserPassword(user, oldPassword, RenewPassword);
+      if(screenReload===true){
+        setScreenReload(false)
+      }else{
+        setScreenReload(true)
+      }
+      navigation.navigate('navigation',{screen:'Home'});
     } catch (error) { 
       console.error('Error updating user profile:', error);
-      setPasswordUpdateError(error.message);
+      //setPasswordUpdateError(error.message);
     }
   };
 

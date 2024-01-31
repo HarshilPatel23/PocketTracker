@@ -3,21 +3,18 @@ import { StyleSheet, View, Text, StatusBar, TextInput, TouchableOpacity, Touchab
 import RNPickerSelect from 'react-native-picker-select';
 import { addExpense } from '../utils/expense.utils';
 import { useAuth } from '../utils/user.utils';
-const AddExpense = () => {
-  const {user,categories,subCategories,fetchCategoriesWithSubcategories}=useAuth();
+const AddExpense = ({navigation}) => {
+  const {user,categories,subCategories,fetchCategoriesWithSubcategories,screenReload,setScreenReload}=useAuth();
   const [expenseName, setExpenseName] = useState('');
   const [expenseAmount, setExpenseAmount] = useState(null);
-
+  const [showSub,setShowSub]=useState([])
   // fetch categories from the db
   const [category, setCategory] = useState('');
   const [subcategory, setSubcategory] = useState('');
   useEffect(() => {
     fetchCategoriesWithSubcategories();
   }, []);
-  const handleCategoryChange = (value) => {
-    setCategory(value);
-    setSubcategory('');
-  };
+  
 
   const handleSubcategoryChange = (value) => {
     setSubcategory(value);
@@ -45,7 +42,12 @@ const AddExpense = () => {
       },
     ]);
     // Add functionality to update your data or send it to the server
-    
+    if(screenReload===true){
+      setScreenReload(false)
+    }else{
+      setScreenReload(true)
+    }
+    navigation.navigate('navigation',{screen:'Expense List'});
   };
 
   const handleFocus = () => {
@@ -63,7 +65,27 @@ const AddExpense = () => {
     amount=text.replace(/\$/g, '');
     setExpenseAmount(parseFloat(amount))
   }
-
+  const handleCategoryChange = (value) => {
+    
+    setCategory(value);
+    
+    if (value!==null){
+      
+      setShowSub(subCategories[value])
+      setSubcategory('');
+    }else{
+      setSubcategory('');
+      setShowSub([])
+    }
+   
+  };
+  const subCategoryShow = (cat) => {
+    if (cat !== null) {
+      return showSub || []; // Return showSub if it exists, otherwise return an empty array
+    } else {
+      return [];
+    }
+  };
   
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -96,7 +118,7 @@ const AddExpense = () => {
         onValueChange={handleCategoryChange}
         value={category}
       />
-      {category && (
+      {category &&(
         <View style={styles.subcatagory}>
           <Text style={styles.heading1}>Select Subcategory:</Text>
           <RNPickerSelect
@@ -108,7 +130,7 @@ const AddExpense = () => {
               },
               placeholder:{ label: 'Select Category', value: '', color: 'rgb(118, 32, 171)'},
             }}
-            items={subCategories[category]}
+            items={subCategoryShow(category)}
             onValueChange={handleSubcategoryChange}
             value={subcategory}
           />
