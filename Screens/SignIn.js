@@ -1,104 +1,94 @@
-import { StyleSheet, View, StatusBar, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native'
-import { Button, TextInput,Text } from 'react-native-paper';
 import React, { useState } from 'react';
+import { StyleSheet, View, StatusBar, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { Button, TextInput, Text } from 'react-native-paper';
 import { useAuth } from '../utils/user.utils';
-import {signInWithEmailAndPassword} from 'firebase/auth'
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
-const SignIn = ({navigation}) => {
-    const [userEmail,setUserEmail]=useState('')
-    const [userPassword,setUserPassword]=useState('')
-    const [user, setUser] = useState(null);
-    const [loading,setloading]=useState(false)
-    const {signIn}=useAuth();
+const SignIn = ({ navigation }) => {
+  const [userEmail, setUserEmail] = useState('');
+  const [userPassword, setUserPassword] = useState('');
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const { signIn } = useAuth();
+  const [error, setError] = useState(null);
+  
 
+  const handleSignIn = async () => {
+    try {
+      setLoading(true);
+      await signIn(userEmail, userPassword);
+      navigation.navigate('navigation');
+      setUserEmail('');
+      setUserPassword('');
+      setError(null);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
 
-    // const FirebaseAuth=auth
-    // const signIn=async ()=>{
-    //     setloading(true);
-    //     try
-    //     {
-    //         const user=await signInWithEmailAndPassword(FirebaseAuth,userEmail,userPassword);
-    //         console.log(user);
-    //         console.log("sucess")
-    //         navigation.navigate("navigation");
-    //     } catch(error){
-    //         console.log(error)
-    //     } finally{
-    //         setloading(false);
-    //     }
-    // }
-    const handleSignIn = async () => {
-        await signIn(userEmail, userPassword);
-        navigation.navigate("navigation");
-      };
-    // useEffect(() => {
-    //     const unsubscribe = auth().onAuthStateChanged((authUser) => {
-    //       if (authUser) {
-    //         // User is signed in.
-    //         setUser(authUser);
-    //       } else {
-    //         // User is signed out.
-    //         setUser(null);
-    //       }
-    //     });
-    //     return unsubscribe; // Unsubscribe when component unmounts
-    // }, []);
+  };
 
-    const togglePasswordVisibility = () => {
-        setPasswordVisible((prev) => !prev);
-      };
-    
+  const togglePasswordVisibility = () => {
+    setPasswordVisible((prev) => !prev);
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-    <View style={styles.container}>
-    <StatusBar style="light" />
-    <View style={styles.topbar}>
-      <Text style={styles.heading}>Pocket Tracker</Text>
-    </View>
-    <View style={styles.body}>
-      <View style={styles.login}>
-        <TextInput style={styles.input} 
-        label="Email"
-        value={userEmail}
-        onChangeText={(text)=>setUserEmail(text)}
-        onSubmitEditing={() => {
-            // Move focus to the password input when "return" is pressed
-            passwordInput.focus();
-        }}
-         />
-        <TextInput style={styles.input}
-      label="Password"
-      secureTextEntry
-      value={userPassword}
-      onChangeText={(text)=>setUserPassword(text)}
-      ref={(input) => {
-        // Set a ref to the password input for focus
-        passwordInput = input;
-        }}
-        onSubmitEditing={handleSignIn}
-      right={<TextInput.Icon icon="eye" />}
-    />
-      
-      <Button style={styles.button} mode="contained" onPress={handleSignIn}>
-        Sign In
-    </Button>
-    {/* <Button style={styles.button} icon="google" mode="contained" >
-        Sign In with Google
-    </Button> */}
-    
-        <View style={styles.bottomtext}>
-            <Text>Don't have an account?  </Text>
-            <Button mode="contained" onPress={() => {navigation.navigate("SignUp")}}>
-                Sign up
-            </Button>
+      <View style={styles.container}>
+        <StatusBar style="light" />
+        <View style={styles.topbar}>
+          <Text style={styles.heading}>Pocket Tracker</Text>
         </View>
-        </View>
-    </View>
+        <View style={styles.body}>
+          <View style={styles.login}>
+            <TextInput
+              style={styles.input}
+              label="Email"
+              value={userEmail}
+              onChangeText={(text) => setUserEmail(text)}
+              onSubmitEditing={() => {
+                // Move focus to the password input when "return" is pressed
+                passwordInput.focus();
+              }}
+            />
+            <TextInput
+            style={styles.input}
+            label="Password"
+            secureTextEntry={!passwordVisible}
+            value={userPassword}
+            onChangeText={(text) => setUserPassword(text)}
+            ref={(input) => {
+              // Set a ref to the password input for focus
+              passwordInput = input;
+            }}
+            right={
+              <TextInput.Icon
+                icon={passwordVisible ? 'eye-off' : 'eye'}
+                onPress={togglePasswordVisibility}
+              />
+            }
+          />
+            {error && 
+            <Text style={styles.errorText}>Your Username or Password is incorrect</Text>
+            }
 
-    </View>
+            <Button style={styles.button} mode="contained" onPress={handleSignIn} disabled={loading}>
+              Sign In
+            </Button>
+
+            <View style={styles.bottomtext}>
+              <Text>Don't have an account? </Text>
+              <Button mode="contained" onPress={() => { navigation.navigate('SignUp'); }}>
+                Sign up
+              </Button>
+            </View>
+          </View>
+        </View>
+      </View>
     </TouchableWithoutFeedback>
-  )
-}
+  );
+};
 
 export default SignIn
 
@@ -150,4 +140,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    errorText: {
+        color: 'red',
+        fontWeight: 'bold',
+        marginBottom: 10,
+        textAlign: 'center',
+      },
 })
