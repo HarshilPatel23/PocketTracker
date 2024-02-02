@@ -3,9 +3,8 @@ import React, {useRef, useState, useEffect} from 'react'
 import { useAuth,updateUserInformation, getUserInfo, updateUserPassword  } from '../utils/user.utils';
 
 
-const Settings = ({ navigation,route }) => {
-  const{reloadHomeScreen,setIsProfileUpdated}=route.params;
-  const { user,reloadUser, signOut } = useAuth();
+const Settings = ({ navigation }) => {
+  const { user, screenReload,signOut,setScreenReload } = useAuth();
   const [userInfo, setUserInfo] = useState(null);
   const [name, setName] = useState('');
   const [oldPassword, setOldPassword] = useState('');
@@ -19,24 +18,31 @@ const Settings = ({ navigation,route }) => {
       if (name !== ''){
         await updateUserInformation(user,name);
       }
-
-      if (oldPassword === '' || newPassword === '' || RenewPassword === '') {
-          setPasswordUpdateError('Please fill all the Password fields');
-          alert('Please fill all the Password fields');
-      } else if (oldPassword !== user.password) {
-          setPasswordUpdateError('Old password is incorrect');
-          alert('Old password is incorrect');
-      } else if (newPassword === RenewPassword) {
+      if (oldPassword !== '' && newPassword !== '' && RenewPassword !== '') {
+        if(newPassword!==RenewPassword){
+          setPasswordUpdateError('Password does not match');
+          return;
+        } else if(oldPassword===newPassword){
+          setPasswordUpdateError('Old and New Password are same');
+          return;
+        } else {
           await updateUserPassword(user, oldPassword, RenewPassword);
-          setPasswordUpdateError(null);
+          navigation.navigate('navigation',{screen:'Home'});
+        }
+      }else{
+        setPasswordUpdateError('Please fill all the fields');
+        alert('Please fill all the fields')
+        return;
       }
-      route.params.reloadHomeScreen;
-      reloadUser();
-      setIsProfileUpdated(true);
-      navigation.navigate('navigation',{screen:'Home'},{reload: true,});
+      if(screenReload===true){
+        setScreenReload(false)
+      }else{
+        setScreenReload(true)
+      }
+      
     } catch (error) { 
       console.error('Error updating user profile:', error);
-      setPasswordUpdateError(error.message);
+      //setPasswordUpdateError(error.message);
     }
   };
 
@@ -49,13 +55,17 @@ const Settings = ({ navigation,route }) => {
         console.error('Error fetching user info:', error);
       }
     };
+
     fetchUserInfo();
   }, [user.uid]);
 
   const handleLogout = () => {
     signOut();
     navigation.navigate('SignIn');
-  };
+  }
+
+  
+
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -110,13 +120,14 @@ const Settings = ({ navigation,route }) => {
             onChangeText={(text) => setReNewPassword(text)}
             secureTextEntry
           />
-          <TouchableOpacity style={styles.button} onPress={handleUpdateProfile}>
-            <Text style={styles.buttonText}>Update Profile</Text>
-          </TouchableOpacity>
-            {passwordUpdateError && (
+          {passwordUpdateError && (
               <Text style={styles.errorText}>{passwordUpdateError}</Text>
             )}
 
+          <TouchableOpacity style={styles.button} onPress={handleUpdateProfile}>
+            <Text style={styles.buttonText}>Update Profile</Text>
+          </TouchableOpacity>
+            
           <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
             <Text style={styles.logoutButtonText}>Logout</Text>
           </TouchableOpacity>
@@ -229,6 +240,11 @@ const styles = StyleSheet.create({
   },
   logoutButtonText: {
     color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  errorText: {
+    color: 'red',
     fontWeight: 'bold',
     textAlign: 'center',
   },
