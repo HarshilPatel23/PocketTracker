@@ -16,8 +16,20 @@ const Settings = ({ navigation,route }) => {
 
   const handleUpdateProfile = async () => {
     try {
-      await updateUserInformation(user,name);
-      await updateUserPassword(user, oldPassword, RenewPassword);
+      if (name !== ''){
+        await updateUserInformation(user,name);
+      }
+
+      if (oldPassword === '' || newPassword === '' || RenewPassword === '') {
+          setPasswordUpdateError('Please fill all the Password fields');
+          alert('Please fill all the Password fields');
+      } else if (oldPassword !== user.password) {
+          setPasswordUpdateError('Old password is incorrect');
+          alert('Old password is incorrect');
+      } else if (newPassword === RenewPassword) {
+          await updateUserPassword(user, oldPassword, RenewPassword);
+          setPasswordUpdateError(null);
+      }
       route.params.reloadHomeScreen;
       reloadUser();
       setIsProfileUpdated(true);
@@ -37,17 +49,13 @@ const Settings = ({ navigation,route }) => {
         console.error('Error fetching user info:', error);
       }
     };
-
     fetchUserInfo();
   }, [user.uid]);
 
   const handleLogout = () => {
     signOut();
     navigation.navigate('SignIn');
-  }
-
-  
-
+  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
