@@ -208,11 +208,13 @@ export const updateUserPassword=async(user,oldPassword,newPassword)=>{
       updatePassword(userCredential.user, newPassword)
       .then(function() {
         console.log("password updated")
+        alert("Password updated successfully")
       }).catch(function(error) {
         console.log("error",error)
       });
     }).catch(function(error) {
       console.log("error",error)
+      alert("Old password is incorrect, try again")
     });
 }
 
