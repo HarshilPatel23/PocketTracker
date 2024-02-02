@@ -111,9 +111,9 @@ const AddExpense = ({navigation}) => {
                 top: 10,
                 right: 12,
               },
-              placeholder:{ label: 'Select Category', value: '', color: 'rgb(118, 32, 171)'},
+              placeholder:{color: 'rgb(118, 32, 171)'},
             }}
-        
+        placeholder= {{ label: 'Select Category'}}
         items={categories}
         onValueChange={handleCategoryChange}
         value={category}
@@ -128,8 +128,9 @@ const AddExpense = ({navigation}) => {
                 top: 10,
                 right: 12,
               },
-              placeholder:{ label: 'Select Category', value: '', color: 'rgb(118, 32, 171)'},
+              placeholder:{color: 'rgb(118, 32, 171)'},
             }}
+            placeholder={{ label: 'Select Subcategory'}}
             items={subCategoryShow(category)}
             onValueChange={handleSubcategoryChange}
             value={subcategory}
@@ -190,7 +191,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
   input: {
-    width: '80%',
+    width: "80%",
     height: 40,
     borderColor: 'rgb(118, 32, 171)',
     borderWidth: 2,
