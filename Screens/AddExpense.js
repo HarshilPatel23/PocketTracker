@@ -11,9 +11,6 @@ const AddExpense = ({navigation}) => {
   // fetch categories from the db
   const [category, setCategory] = useState('');
   const [subcategory, setSubcategory] = useState('');
-  useEffect(() => {
-    fetchCategoriesWithSubcategories();
-  }, []);
   
 
   const handleSubcategoryChange = (value) => {

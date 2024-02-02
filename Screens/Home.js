@@ -5,11 +5,12 @@ import { getUserExpenses, filterExpenses, totalExpense, getMonthlyExpenseByCateg
 import { VictoryPie } from 'victory-native';
 
 const Home = ({ navigation,route }) => {
-  const { reloadUser,screenReload } = useAuth();
+  const { reloadUser,screenReload, fetchCategoriesWithSubcategories } = useAuth();
   const {user,reload}=route.params;
   const [expensesToShow,setExpensesToShow]=useState([])
   useEffect(() => {
     reloadUser();
+    fetchCategoriesWithSubcategories();
     getUserExpenses(user.uid)
       .then((expenses) => {
         const x = new Date();
@@ -61,7 +62,7 @@ const Home = ({ navigation,route }) => {
         <Text style={styles.heading1}>{user.displayName}</Text>
         </View>
         <View style={styles.button}>
-        <Text style={styles.heading2}>Your Total Monthly Expneses:</Text>
+        <Text style={styles.heading2}>Your Total Monthly Expnese:</Text>
         <Text style={styles.heading2}>$ {totalExpense(expensesToShow)}</Text>
         </View>
       </View>

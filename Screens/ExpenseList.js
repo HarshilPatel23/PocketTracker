@@ -1,18 +1,47 @@
-import { ScrollView, StyleSheet, Text, View, RefreshControl,StatusBar } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, RefreshControl,StatusBar,Button } from 'react-native';
 import { TouchableOpacity, TouchableWithoutFeedback, Keyboard,Alert  } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import React, { useEffect, useState } from 'react';
 import { filterExpenses, getUserExpenses, totalExpense } from '../utils/expense.utils';
 import { useAuth } from '../utils/user.utils';
+import DateTimePicker from '@react-native-community/datetimepicker';
 const Settings = ({navigation,route}) => {
   const [userExpenses, setUserExpenses] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [expensesToShow,setExpensesToShow]=useState([])
-  const { user,screenReload,setScreenReload,categories,fetchCategoriesWithSubcategories } = useAuth();
+  const { user,screenReload,setScreenReload,categories,fetchCategoriesWithSubcategories,subCategories } = useAuth();
   const [category, setCategory] = useState('');
+  const [filter,setFilter]=useState("")
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [subcategory, setSubcategory] = useState('');
+  const [showSub,setShowSub]=useState([])
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+  const hideDatePicker=()=>{
+    setDatePickerVisibility(false);
+  }
+  const handleDateChange = (date) => {
+    if (date) {
+      const selectedMonth = date.getMonth();
+      const selectedYear = date.getFullYear();
+      const firstDayOfMonth = new Date(selectedYear, selectedMonth, 1);
+      setSelectedDate(firstDayOfMonth);
+      console.log(date)
+    }
+  };
+  const handleConfirm=()=>{
+    console.log("selected date",selectedDate)
+    try {
+    setExpensesToShow(filterExpenses(userExpenses,"monthly",selectedDate))
+    } catch (error) {
+      console.log(error)
+    }
+    hideDatePicker()
+  }
   const onRefresh = () => {
     setRefreshing(true);
-    fetchCategoriesWithSubcategories();
     // Fetch the updated user expenses
     getUserExpenses(user.uid)
       .then(async (expenses) => {
@@ -23,9 +52,6 @@ const Settings = ({navigation,route}) => {
         //setExpensesToShow([])
         setRefreshing(false);
       })
-      .then(
-        handleShow()
-      )
       .catch((error) => {
         console.log(error);
         setRefreshing(false);
@@ -33,16 +59,48 @@ const Settings = ({navigation,route}) => {
   };
   useEffect(() => {
     // Initial fetch of user expenses
+    
     onRefresh();
+    handleShow()
+    
   }, [screenReload]);
   const handleCategoryChange = (value) => {
     setCategory(value);
+    if (value!==null){
+      setShowSub([])
+      setShowSub(subCategories[value])
+      showSub.push({"label":"All","value":"All"})
+      setSubcategory('');
+    }else{
+      setSubcategory('');
+      setShowSub([])
+    }
   };
-  const handleShow=()=>{
-    console.log("select category",category)
-    if(category!=''){
-    setExpensesToShow(filterExpenses(userExpenses,"category",category))}
+  const handleSubcategoryChange = (value) => {
+    setSubcategory(value);
+  };
+  const subCategoryShow = (cat) => {
+    if (cat !== null) {
+      return showSub || []; // Return showSub if it exists, otherwise return an empty array
+    } else {
+      return [];
+    }
+  };
+  const handleFilterChange = (value)=>{
+    setExpensesToShow([])
+    setFilter(value);
   }
+  const handleShow=()=>{
+    console.log("select category",category,subcategory)
+    if(category!=''){
+      if (subcategory==='All'|| subcategory=='') {
+        setExpensesToShow(filterExpenses(userExpenses,"category",category))} 
+      }
+    if(category!='' && subcategory!='' && subcategory!='All'){
+      setExpensesToShow(filterExpenses(userExpenses,"subCategory",subcategory))
+    }
+  }
+  const filters=[{label:"Monthly",value:"Monthly"},{label:"Category",value:"Category"},{label:"Sub-Category",value:"Sub-Category"}]
   return (
 
     <View style={styles.container}>
@@ -51,6 +109,23 @@ const Settings = ({navigation,route}) => {
         <Text style={styles.heading}>Expense List</Text>
       </View>
       <View>
+        <Text style={styles.heading1}>Select filter type:</Text>
+        <RNPickerSelect
+          style={{
+                ...styles,
+                iconContainer: {
+                  top: 10,
+                  right: 12,
+                },
+                placeholder:{ label: 'Select filter',value:null, color: 'rgb(118, 32, 171)'},
+              }}
+          
+          items={filters}
+          onValueChange={handleFilterChange}
+          value={filter}
+        />
+      </View>
+      {filter==="Category"&&(<View>
         <Text style={styles.heading1}>Select Category:</Text>
         <RNPickerSelect
           style={{
@@ -66,10 +141,45 @@ const Settings = ({navigation,route}) => {
           onValueChange={handleCategoryChange}
           value={category}
         />
+        {category &&(
+        <View >
+          <Text style={styles.heading1}>Select Category:</Text>
+          <RNPickerSelect
+            style={{
+              ...styles,
+              iconContainer: {
+                top: 10,
+                right: 12,
+              },
+              placeholder:{ label: 'Select subCategory', value: '', color: 'rgb(118, 32, 171)'},
+            }}
+            items={subCategoryShow(category)}
+            onValueChange={handleSubcategoryChange}
+            value={subcategory}
+          />
+        </View>
+      )}
         <TouchableOpacity style={styles.showButton} onPress={handleShow}>
             <Text style={styles.buttonText}>Show Expenses</Text>
         </TouchableOpacity>
-      </View>
+      </View>)}
+      {filter==="Monthly"&&(
+        <View>
+          <Text>Select a month and year:</Text>
+          <Button title="Show Month Picker" onPress={showDatePicker} />
+          {isDatePickerVisible && (
+            <DateTimePicker
+              value={selectedDate}
+              mode="date"
+              display="spinner"
+              onChange={(event, date) => {
+                handleDateChange(date)
+              }}
+            />
+          )}
+           {isDatePickerVisible &&(<Button title="Confirm" onPress={handleConfirm} />)}
+        </View>
+      )}
     <ScrollView
     
       refreshControl={
