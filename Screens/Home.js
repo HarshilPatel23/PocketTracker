@@ -5,20 +5,11 @@ import { getUserExpenses, filterExpenses, totalExpense, getMonthlyExpenseByCateg
 import { VictoryPie } from 'victory-native';
 
 const Home = ({ navigation,route }) => {
-  const { reloadUser } = useAuth();
+  const { reloadUser,screenReload } = useAuth();
   const {user,reload}=route.params;
-  const [isProfileUpdated, setIsProfileUpdated] = useState(false);
   const [expensesToShow,setExpensesToShow]=useState([])
-
-  console.log("home",user)
   useEffect(() => {
-  
-    if (reload === true) {
-      reloadUser();
-      console.log('Profile Updated!');
-      setIsProfileUpdated(false);
-    }
-
+    reloadUser();
     getUserExpenses(user.uid)
       .then((expenses) => {
         const x = new Date();
@@ -28,7 +19,7 @@ const Home = ({ navigation,route }) => {
       .catch((error) => {
         console.log(error);
       });
-  }, [reload]);
+  }, [screenReload]);
   
   // useEffect(() => {
   //   if (isProfileUpdated) {
@@ -39,12 +30,8 @@ const Home = ({ navigation,route }) => {
   //     setIsProfileUpdated(false);
   //   }
   // }, [isProfileUpdated]);
-
-  const reloadHomeScreen = () => {
-    setIsProfileUpdated(true);
-  };
   const handleUserLogoPress = () => {
-    navigation.navigate('Settings',{reloadHomeScreen: reloadHomeScreen(),setIsProfileUpdated: setIsProfileUpdated,});
+    navigation.navigate('Settings');
       };
 
   const chartData = getMonthlyExpenseByCategory(expensesToShow);

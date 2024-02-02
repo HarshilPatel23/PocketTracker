@@ -57,7 +57,7 @@ const AuthContext = createContext();
 // added to the app.js so we can useAuth to use below props
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-
+const [screenReload,setScreenReload]=useState()
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
       setUser(authUser);
@@ -136,7 +136,7 @@ export const AuthProvider = ({ children }) => {
   
 
   return (
-    <AuthContext.Provider value={{ user, signIn, signOut,categories,subCategories,fetchCategoriesWithSubcategories,reloadUser}}>
+    <AuthContext.Provider value={{ user, signIn, signOut,categories,subCategories,screenReload,setScreenReload,fetchCategoriesWithSubcategories,reloadUser}}>
       {children}
     </AuthContext.Provider>
   );

@@ -44,7 +44,6 @@ export const getUserExpenses=async(userId)=>{
           ...expenseDoc.data()
         })
       });
-      console.log("expenses",expenses)
       return expenses
     }
 }

@@ -8,7 +8,7 @@ const Tab = createBottomTabNavigator();
 
 function MyTabs({route}) {
   const reload = route.params?.reload || false;
-  const {user}=useAuth();
+  const {user,screenReload}=useAuth();
   return (
     <Tab.Navigator screenOptions={({ route }) => ({
       tabBarIcon: ({ focused, color, size }) => {
