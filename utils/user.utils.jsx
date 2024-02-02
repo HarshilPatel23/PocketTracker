@@ -80,6 +80,7 @@ const [screenReload,setScreenReload]=useState()
       
     } catch (error) {
       console.error('Error signing in:', error.message);
+      throw error; 
     }
   };
 
